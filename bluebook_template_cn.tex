@@ -147,7 +147,7 @@
 \textbf{必要性：}在开放任务与富语境下，把「审查一切有害语义」作为全局在线目标不可执行或可执行性无界，与算力、时延及可测试性冲突。\textbf{设计含义：}将验证\emph{收缩到实例}：对离散 \textbf{event}（输入块、检索单元、工具调用、候选输出）在版本化 \textbf{policy} 下做可重复求值，并由 \textbf{kernel} 产出带理由码的 \textbf{decision} 与可关联 \textbf{evidence}；拒绝把未定义对象交给模型「自行把握」。
 
 \paragraph{（二）认知一致性失效与价值/本体锚定及防御性降级。}
-\textbf{必要性：}多轮对话与工具链可破坏用户与系统对「何物可信、何操作被允许」的隐含一致；压力下模型内生反思无契约保证。\textbf{设计含义：}将价值边界与本体约束写入外置 \textbf{policy}；在冲突信号下触发 \textbf{FailSafeObject} 所枚举的防御性降级（受控动作空间），而非继续全能力生成；恢复路径须写入权限与证据（第4章 R1/R2）。
+\textbf{必要性：}多轮对话与工具链可破坏用户与系统对「何物可信、何操作被允许」的隐含一致；压力下模型内生反思无契约保证。\textbf{设计含义：}将价值边界与本体约束写入外置 \textbf{policy}；在冲突信号下触发 \textbf{FailSafeObject} 所枚举的防御性降级（受控动作空间），而非继续全能力生成；恢复路径须写入权限与证据（第4章 Tier-R1/Tier-R2）。
 
 \paragraph{（三）文本语义检索路径失效与表征异常及表示级监控。}
 \textbf{必要性：}仅监控表面 token 或短上下文不足以覆盖投毒、隐指令、跨文档拼接与检索排序操纵。\textbf{设计含义：}检索路径上强制血缘、分段、引用绑定；监控与证据须纳入\emph{表征异常与表示级（及行为轨迹级）}信号，并与第5章评测用例及最小证据包字段对齐，使「当时看见了什么表征证据」可回放。
@@ -203,36 +203,63 @@
 % 第3章
 % =============================
 \chapterstarter{参考架构与解耦安全内核}{
-本章将\emph{总对象}分解为可实现的层与模块，并把\emph{系统原理翼} \DecoupledSafety{} 落到 \SafetyKernel{} 接口与交付表。\textbf{主线：}\ControlPlane{} + \DecoupledSafety{}。为第4章协议与第5章证据对象提供统一事件面。
+本章给出\emph{系统层}可部署视图：分层仍是骨架，但必须同时交代\emph{控制流与证据流}、\textbf{三平面最小字段}、\textbf{同步在线强制}与\textbf{异步带外适应}的切分，以及 \SafetyKernel{} 最小接口——使架构图不再是静态展板，而成为第4章协议与第5章证据可挂载的同一对象模型。
 }{
 \begin{itemize}
-  \item 从交互层到治理层的分层架构。
-  \item 策略引擎、护栏、检索中介、工具控制、审计面等模块接口。
-  \item 初始交付物与阶段归属（详见第6章）。
+  \item 分层职责 + 动态控制/证据路径（与静态框图的关系）。
+  \item 数据面 / 控制面 / 证据面：最小字段表与关联规则。
+  \item 同步在线强制平面 vs 异步带外适应平面；\SafetyKernel{} 最小接口表与交付物。
 \end{itemize}
 }
 
-\section{分层参考架构}
-\textbf{主线：}\ControlPlane{}。架构按层划分职责：
-\begin{itemize}
-  \item \textbf{交互层：}用户与应用输入、认证与租户语境、会话管理、请求整形。
-  \item \textbf{语境层：}提示理解、路由、检索规划、血缘绑定、按敏感度与用途对语料分段。
-  \item \textbf{模型执行层：}模型路由、解码控制、事实锚定挂钩、在可用时的弃权与不确定性信号。
-  \item \textbf{运行时强制层：}策略引擎、护栏、检索中介、响应过滤、工具门控、确定性改写与删节、升级处置。
-  \item \textbf{治理层：}证据存储、评测流水线、发布闸、监控、事件回放、策略生命周期管理。
-\end{itemize}
+\section{分层参考架构与动态控制流}
+\textbf{主线：}\ControlPlane{}。分层描述回答「谁负责什么」；\emph{动态控制流}回答「一次请求中状态如何迁移」。二者不可缺一：交互—语境—模型—运行时—治理各层在运行时以\textbf{事件}串联——同一 \texttt{correlation\_id} 下依次产生语境绑定、检索命中记录、模型路由决策、\SafetyKernel{} 求值与证据追加。静态图若不与事件序对齐，工程上会出现「图画了、日志对不上」的断裂。
 
-\section{数据面、控制面与证据面}
-\textbf{主线：}\ControlPlane{}。\emph{数据面}承载提示、检索文本、嵌入元数据、工具请求与响应及补全。\emph{控制面}承载策略、决策、义务、路由结果、风险评分与升级状态。\emph{证据面}跨系统绑定标识符：策略版本、模型路由、检索语料切片、检测器版本、适当时的提示与文档哈希、决策与人工审批。保证论述依赖跨平面关联证据记录。
+\section{数据面、控制面与证据面：最小字段}
+\textbf{主线：}\ControlPlane{}。三平面不是哲学标签，而是\emph{写入与校验的最小列集合}；下列字段为推荐最小集，实现可增列但不得拆散关联键。
 
-\section{\SafetyKernel{} 接口}
-\textbf{主线：}\DecoupledSafety{}。\SafetyKernel{} 暴露窄幅稳定接口以使强制可组合：
-\begin{itemize}
-  \item \textbf{事件接入。}对输入、检索命中、候选补全、工具调用等进行规范化事件。
-  \item \textbf{策略求值。}在定义事件上对版本化规则集与阈值做确定性求值。
-  \item \textbf{动作派发。}允许、改写、约束、沙箱、升级、阻断、降级，并携带类型化参数。
-  \item \textbf{证据发射。}输出可供 \EvalFramework{} 与治理工具消费的结构化记录。
-\end{itemize}
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.18\textwidth}p{0.78\textwidth}@{}}
+\toprule
+\textbf{平面} & \textbf{最小字段（示例名；实现可映射为 schema）} \\
+\midrule
+数据面 & \texttt{correlation\_id}；\texttt{tenant\_id} / \texttt{principal\_id}；\texttt{session\_id}；\texttt{prompt\_digest} 或等价哈希；\texttt{retrieval\_unit\_id[]}（含切片版本/索引世代）；\texttt{tool\_invocation\_id[]}（含参数摘要）；\texttt{model\_route\_id}；\texttt{completion\_id}；敏感分级标签（若适用）。 \\
+控制面 & \texttt{policy\_version}；\texttt{policy\_binding\_id}；\texttt{risk\_score} 或离散档位；\texttt{intervention}（allow/rewrite/\ldots）；\texttt{route\_decision}（轻/重检测路径等）；\texttt{fail\_safe\_state}（若进入降级）；\texttt{deadline\_budget\_ms}（与 \textsc{sla} 对齐）。 \\
+证据面 & 与上述键可 join 的 \texttt{decision\_record\_id}；\texttt{evidence\_schema\_version}；\texttt{rationale\_code}；可选 \texttt{artifact\_hash[]}；人工审批指针 \texttt{approval\_ref}（若进入 Tier-R2）；不可变存储定位子（对象存储键等）。 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{关联规则。}任一 \textbf{decision} 必须能由（数据面子集 + 控制面子集）在证据面中唯一重构；发布闸与回归只承认满足该 join 闭合的记录（与第5章最小证据包一致）。
+
+\section{同步在线强制平面与异步带外适应平面}
+\textbf{主线：}\ControlPlane{} + \DecoupledSafety{}。
+
+\paragraph{同步在线强制平面（热路径）。}在单请求/单会话 \textsc{sla} 内必须完成：事件规范化、策略绑定、确定性求值、允许的动作派发、同步 \textsc{api} 可返回的结果、以及证据条目的\emph{原子追加}。延迟预算内允许的工作：轻量规则、缓存型分类器、限次检索、已预热的重检测路径。原则：\textbf{不依赖}跨请求全局优化、不阻塞于人工审批（除非已进入协议化 Tier-R2 且仍满足 S1）。
+
+\paragraph{异步带外适应平面（冷路径）。}在请求边界之外运行：语料与索引刷新、跨租户漂移监控聚合、策略候选挖掘、评测回归全量重跑、红队战役、阈值与路由策略的批量调参、模型路由 A/B 的离线评估。产出物为\emph{下一版} \texttt{policy\_version}、检测器包、索引世代或路由表——经发布闸后才能在热路径生效。
+
+\paragraph{切分纪律。}热路径只消费\emph{已发布}配置版本；冷路径禁止直接改写正在服务中的热配置而不经版本单调与签批。第4章 Fail-Safe 的触发信号主要来自热路径；适应动作的主体在冷路径完成。
+
+\section{\SafetyKernel{} 最小接口}
+\textbf{主线：}\DecoupledSafety{}。下列四类调用构成实现最小集；语义上对应第2章 \texttt{event}/\texttt{decision}/\texttt{evidence}。
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.22\textwidth}p{0.32\textwidth}p{0.40\textwidth}@{}}
+\toprule
+\textbf{接口} & \textbf{输入（摘要）} & \textbf{输出（摘要）} \\
+\midrule
+\texttt{ingest\_event} & 原始或半规范化载荷 + 租户/会话上下文 & \texttt{event\_id} + 规范化 \texttt{event} 记录 \\
+\texttt{evaluate} & \texttt{event\_id} + \texttt{policy\_version} + 可选特征缓存句柄 & \texttt{decision} + \texttt{rationale\_code} + 风险档位 \\
+\texttt{dispatch} & \texttt{decision} + 执行上下文 & 对下游可见的受控副作用 / 阻断 / 改写结果 \\
+\texttt{emit\_evidence} & \texttt{decision} + 数据面快照指针 & \texttt{decision\_record\_id}，可 join 证据面 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{非目标。}内核不实现业务编排全部语义；不替代执行平台的算力调度；不承担冷路径上的重训练——仅保证热路径上的强制与证据原子性。
 
 \begin{deliverabletable}
 策略引擎 & 模式 + 规则 + 决策轨迹 & 对约定事件类型可确定性回放 & 运行时策略 & P1 \\
@@ -243,20 +270,23 @@
 评测服务 & 套件、看板、回归 & 版本化包满足发布闸 & 质量保证 & P1 \\
 \end{deliverabletable}
 
-\keytakeaway{\SafetyKernel{} 将 \DecoupledSafety{} 落实为可实现接口：类型化事件、确定性决策与适于治理的证据。}
+\keytakeaway{参考架构须同时可读「层」与「流」：三平面最小字段提供可 join 的证据闭合，同步/异步双平面划定热路径与冷路径职责，\SafetyKernel{} 四类接口把 \DecoupledSafety{} 压成工程可验收边界。}
 
 % =============================
 % 第4章
 % =============================
 \chapterstarter{运行时强制与策略编排}{
-本章将 \DecoupledSafety{} 落实为可测运行时行为：风险闭环、策略生命周期、\RAG{}/工具强制，并以\emph{两阶段 Fail-Safe 服务协议}写清触发、降级空间、服务不变量、恢复层级与权限边界，供工程验收与第5章证据对象对齐。
+本章为\emph{运行时系统层}：先划清\textbf{在线热路径}与\textbf{带外冷路径}；再给风险闭环与 \RAG{}/工具强制；核心为\textbf{两阶段 Fail-Safe 服务协议}（蓝皮书化压缩的 T1--T3、D1--D4、S1、Tier-R1/R2）；最后给出 \textbf{ORA（Observe--Route--Adapt）}作为\emph{带外受控适应闭环}，与第3章异步平面及第5章证据对齐。
 }{
 \begin{itemize}
-  \item Measure--Profile--Select--Enforce--Evidence 与策略生命周期。
-  \item \RAG{} 与工具调用强制模式。
-  \item Fail-Safe 协议：触发、降级、不变量、恢复与 authority boundary。
+  \item 在线 vs 带外：信号准入与昂贵动作异步纪律。
+  \item 风险闭环、策略生命周期、\RAG{} / 工具。
+  \item Fail-Safe 协议 + ORA 闭环与评测证据字段。
 \end{itemize}
 }
+
+\section{在线热路径与带外冷路径：分工回顾}
+\textbf{主线：}\ControlPlane{}。与第3章一致：\textbf{热路径}负责毫秒至秒级的强制与可返回决策；\textbf{冷路径}负责证据消化后的策略/索引/模型路由更新。本章规定：何种信号\emph{只能}触发热路径内的 Fail-Safe，何种适应\emph{必须}落冷路径完成。
 
 \section{风险自适应控制闭环}
 \textbf{主线：}\ControlPlane{}。在线强制与保证闭环对齐：
@@ -284,28 +314,49 @@
 \section{工具调用控制}
 \textbf{主线：}\ControlPlane{}。工具将语言映射为副作用；须按租户与工作流执行能力矩阵、参数类型校验、高影响动作的动态审批、可行时的沙箱执行、持久限速，以及只读与变更类工具的分离。编排器不得构造绕过已记录决策的平行路径。
 
-\section{两阶段 Fail-Safe 服务协议}
-\textbf{主线：}\DecoupledSafety{}。本节将「升级、降级与人机协同」提升为可验收\emph{协议}（企业可读表述；实现可映射至内部触发/动作编号）。\textbf{阶段一（检测与判定）}在 \SafetyKernel{} 内完成；\textbf{阶段二（服务降级与恢复）}在受控动作空间与明确权限边界内完成，且须产生与第5章最小证据包对齐的结构化记录。
+\section{两阶段 Fail-Safe 服务协议（蓝皮书压缩写法）}
+\textbf{主线：}\DecoupledSafety{}。本节把论文式触发—动作—不变量—恢复压缩为\emph{可验收叙述}：实现可保留内部编号，对外文档只需「阶段—触发类—动作类—不变量—恢复层」五元一致。\textbf{阶段一}在 \SafetyKernel{} 内完成检测与判定；\textbf{阶段二}在预声明降级空间内完成对用户可见的服务形态迁移，并写证据；恢复可跨至冷路径但须满足权限与版本纪律。
 
-\subsection{触发接口（三类信号）}
+\subsection{触发类 T1--T3（热路径可读）}
 \begin{itemize}
-  \item \textbf{策略/规范冲突信号}——显式规则互斥、越权工具意图、或策略版本与运行态不一致。
-  \item \textbf{社会技术/运营异常信号}——速率、来源、租户上下文突变，或人机审批队列积压超过 \textsc{sla}。
-  \item \textbf{验证器不确定/证据不足信号}——分类器低置信、检索血缘缺失、关键断言无法绑定证据等。
+  \item \textbf{T1（策略/规范冲突类）}——规则互斥、越权工具意图、策略版本与运行态不一致、或义务在当前 \texttt{event} 上不可同时满足。热路径内须给出明确 \texttt{rationale\_code}；若无法局部消解则进入阶段二。
+  \item \textbf{T2（社会技术/运营异常类）}——速率/来源/租户上下文突变、依赖服务降级、审批队列逼近或突破 \textsc{sla}。允许在热路径先触发「限流/只读/收窄工具面」等\emph{低成本}动作；若仍不满足 S1，则进入阶段二 D 类。
+  \item \textbf{T3（验证器不确定/证据不足类）}——分类器低置信、检索血缘缺失、关键断言无法绑定证据面字段。默认倾向保守：进入 D1/D3 或 D4，而非在热路径上「猜过去」。
 \end{itemize}
 
-\subsection{降级动作空间（受控四象）}
-在触发成立时，系统仅允许在下列\emph{预声明}动作集合内迁移（具体映射由策略包配置）：\textbf{(D1)} 模板化拒绝或固定安全答复；\textbf{(D2)} 受限无状态沙箱内执行（禁用高副作用工具或缩小检索切片）；\textbf{(D3)} 对输出做安全删改或脱敏后返回；\textbf{(D4)} 硬终止当前请求并返回可解释错误码。每项须记录业务影响类别与必填证据字段，供发布闸与复盘引用。
+\subsection{降级动作空间 D1--D4（受控四象）}
+触发成立时，仅允许在下列\emph{预配置}动作间迁移；每项须带业务影响标签与必填证据列（与第5章 E1--E3 对齐）：
+\begin{itemize}
+  \item \textbf{D1}——模板化拒绝或固定安全答复（可预测、可测 Utility 代价）。
+  \item \textbf{D2}——受限无状态沙箱：禁用或缩小高副作用工具集、收窄检索切片或索引世代。
+  \item \textbf{D3}——对模型输出做安全删改/脱敏后返回（保留可引用理由码）。
+  \item \textbf{D4}——硬终止当前请求：返回错误码与自助恢复提示，不隐式重试耗尽显性预算。
+\end{itemize}
 
-\subsection{服务不变量（示例 S1）}
-\textbf{同步可用性契约：}在降级路径下，同步 \textsc{api} 仍须在约定时限内返回可机器处理的响应（可为降级结果或明确错误）；不得无限阻塞主链路。降级不得静默破坏与租户约定的 \textsc{sla} 语义（例如「必须返回理由码」）。恢复流程不得在未记录审批的情况下提升特权。
+\subsection{同步服务不变量 S1}
+\textbf{S1（同步可应答）：}凡声明为同步的 \textsc{api}，在含降级情形下仍须在约定时限内返回\emph{可机器处理的}结果体（含降级载荷或错误码），不得无限阻塞主链路；须返回与租户契约一致的理由码字段。S1 与第3章热路径预算一致：违反即视为实现缺陷而非「模型不够聪明」。
 
-\subsection{异构恢复层级}
-\textbf{R1——规则化恢复：}清除已知不良状态、回滚策略试验旗标、切换只读模式等自动化步骤。\textbf{R2——人工/规范性恢复：}法务、安全或数据治理签批后恢复全能力；须写入证据图谱并与策略版本绑定。\textbf{权限边界（authority boundary）}：何人/何服务可批准 R2、可修改何类策略字段，须在治理配置中单列，避免与运行时执行身份混同。
+\subsection{异构恢复 Tier-R1 / Tier-R2}
+\begin{itemize}
+  \item \textbf{Tier-R1（规则化恢复）}——清状态、回滚试验旗标、切换只读、切回较轻检测路径等自动化步骤；可在秒至分钟级完成；证据自动追加。
+  \item \textbf{Tier-R2（人工/规范性恢复）}——法务、安全或数据治理签批后恢复全能力或提升特权；必须产生 \texttt{approval\_ref} 与策略版本单调记录；不得由运行时执行身份自批。
+\end{itemize}
+\textbf{authority boundary：}谁可触发 Tier-R2、可改哪些策略字段，与执行平台服务账号分离配置。
 
-\evaluationnote{运行时保证目标}{每条干预路径须配对指标：残余风险、效用影响、时延增量与审计完整性；Fail-Safe 须额外报告降级命中率、p95/p99 返回时延与错误码分布。}
+\section{带外受控适应闭环（ORA：Observe--Route--Adapt）}
+\textbf{主线：}\ControlPlane{}。ORA 不是「让模型在线自学」，而是第3章\textbf{异步带外适应平面}上的\emph{受控闭环}：只消费已落盘的证据与聚合指标，产出\emph{下一版}可发布配置，再经签批进入热路径。
 
-\keytakeaway{运行时强制与 Fail-Safe 协议将 \DecoupledSafety{} 体现为真实事件上的可度量决策与可验收降级，而非与证据脱节的静态配置。}
+\paragraph{在线路径做什么。}在 \textsc{sla} 内：按当前 \texttt{policy\_version} 对 \texttt{event} 求值、派发、写证据；在 T1--T3 成立时进入 D1--D4 与 Tier-R1 可自动化部分。在线路径\textbf{不做}：全量重训、全索引重建、跨租户全局阈值搜索、未经签批的策略改写。
+
+\paragraph{带外路径做什么。}消费 Observe 阶段汇总的监控与评测差分：漂移、误报/漏报结构、攻击面变化；在 Route 阶段生成候选（新阈值、检索分段策略、工具白名单变更、模型路由权重）；在 Adapt 阶段经离线评测与发布闸后\emph{版本化}上线。产出物永远是「新版本配置包」，而非热路径内存中的隐性突变。
+
+\paragraph{可进入在线路径的信号。}单请求内可判定且预算内的：规则特征、缓存型分数、轻量检索校验、已预热重检测一次、与当前 \texttt{correlation\_id} 直接绑定的血缘缺失标记。其共同特征是：可在 S1 内完成求值且不需要跨请求全局最优。
+
+\paragraph{必须异步完成的昂贵适应。}包括但不限于：大规模语料/索引刷新、跨租户聚合调参、完整红队战役回放、策略 DSL 的结构化改写、引入新检测器家族、改变 Track A 放行契约语义。此类动作只能在 ORA 冷路径完成，并在证据面产生「候选—评测—签批—生效」链，防止线上隐性分叉。
+
+\evaluationnote{运行时保证目标}{热路径：残余风险、效用影响、p95/p99、S1 违约率；Fail-Safe：T*$\rightarrow$D* 迁移频率与错误码分布；ORA 冷路径：候选到上线的周期与回滚次数。与第5章最小证据包字段交叉校验。}
+
+\keytakeaway{第4章把运行时写清三件事：热路径上的 T/D/S 纪律、冷路径上的 Tier-R2 与 ORA 适应、以及全程可 join 的证据——使强制协议与第3章三平面及第5章放行共用同一对象语言。}
 
 % =============================
 % 第5章
@@ -363,7 +414,7 @@
 \section{最小可部署证据包（Minimum Deployable Evidence Pack）}
 \textbf{主线：}\EvalFramework{}。在资源受限时，下列证据为\emph{最低集合}；缺任一项则不对生产主张升级或对外扩大承诺范围。
 \begin{itemize}
-  \item \textbf{E1--E3（Fail-Safe 协议）}——代表性对抗与社会技术场景下，触发—降级—返回路径的正确性；降级路径 p95/p99 时延与成功返回率；恢复必要性（何种条件必须进入 R2）。
+  \item \textbf{E1--E3（Fail-Safe 协议）}——代表性对抗与社会技术场景下，触发—降级—返回路径的正确性；降级路径 p95/p99 时延与成功返回率；恢复必要性（何种条件必须进入 Tier-R2）。
   \item \textbf{E4--E6（观测—路由—适应闭环，若适用）}——表征/行为异常监控相对基线的 \textsc{tpr}/\textsc{fpr} 与误报成本；带外路由相对纯语义拦截的边际增益；高密度可解释理由相对短提示对的效用—安全折中证据。
   \item \textbf{跨章关联}——每条证据须带策略版本、模型路由、检测器/规则包版本及（若适用）轨道标识（Track A/B），以便与第6章证据图谱边一致。
 \end{itemize}
@@ -393,7 +444,7 @@
 \begin{itemize}
   \item \textbf{理论/语义前提}——风险分类、策略 schema 与事件类型在版本 $P$ 内可判定；不可判定部分通过验收契约显式列为残余风险。
   \item \textbf{部署/观测前提}——关键遥测、日志不可篡改与关联 \textsc{id} 可用；若观测降级，则同时收紧可对外主张的能力包（例如禁用高风险工具）。
-  \item \textbf{治理前提}——R2 审批链、法务与数据主体权利流程可用；若不可用，则禁止依赖人工恢复的全能力路径。
+  \item \textbf{治理前提}——Tier-R2 审批链、法务与数据主体权利流程可用；若不可用，则禁止依赖人工恢复的全能力路径。
   \item \textbf{观测能力分层}——在白盒、半白盒、黑盒不同观测度下，可主张的保证强度不同；须在对外材料中分层披露，不得混称为同一「安全等级」。
 \end{itemize}
 
