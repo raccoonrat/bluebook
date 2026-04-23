@@ -526,12 +526,99 @@
 \keytakeaway{第6章把「路线图」升级为企业契约与运作模型：以 claim discipline 约束对外叙述，以 bounded deployment contract 约束能力包与退化语义，以证据图谱与发布治理驱动统一决策（非统一分数），并以组织节律让控制、证据与学习可持续闭环。}
 
 % =============================
+% 第7章
+% =============================
+\chapterstarter{Chinese \& Multilingual Safety Intelligence：全球核心 intelligence}{
+本章将中国与多语能力从「本地化支持」提升为全局核心 intelligence：\textbf{geo-specific semantics} 不可压缩为统一分数或统一语义，它是企业义务、风险分类与证据口径的来源，反向约束 \texttt{policy}、\texttt{event}、\texttt{evidence} 与 Track A 放行结论。核心交付不是翻译或案例库，而是可版本化的语义—义务映射、语言 gate、检测器制品与可放行证据包的统一链路。
+}{
+\begin{itemize}
+  \item 语义与义务：将中国与多语风险语义写入 taxonomy 与 acceptance contract。
+  \item 多语言 gate：哪些语言/法域可进入 Track A，哪些必须留在 Track B。
+  \item 检测器与证据：中文 detector development 与多语评测进入 release evidence pack。
+\end{itemize}
+}
+
+\section{为什么 geo-specific semantics 是核心 intelligence}
+\textbf{主线：}\ControlPlane{} / \EvalFramework{}。语言与法域引入的不是「展示层差异」，而是\emph{义务本体与风险语义}差异：同一行为在不同语境下的合规含义、可解释性要求、数据主权边界与可接受残余风险都可能不同。若将其当作附属支持，则会出现三类断裂：（i）\textbf{策略断裂}：\texttt{policy\_version} 只表达全球平均义务，无法与本地可部署结论一致；（ii）\textbf{证据断裂}：\texttt{decision\_record\_id} 无法承载本地解释口径与审计字段；（iii）\textbf{放行断裂}：Track A 的可部署结论被迫引用 Track B 的上界结果或翻译版指标，形成不可辩护叙事。结论：多语与中国能力必须进入主线的 evidence engine 与 bounded contract。
+
+\section{语义与义务基线：从监管类别到可测试义务}
+\textbf{主线：}\EvalFramework{}。将 geo-specific 义务以\emph{可测试}方式进入基准宪章与验收契约：
+\begin{itemize}
+  \item \textbf{分类与映射。}以本地监管/行业义务（例如 TC260 相关类别）形成 taxonomy，并映射为 \texttt{policy} 的约束字段、阈值与例外条款（进入 acceptance contract）。
+  \item \textbf{理由码字典。}将本地语义差异固化为 \texttt{rationale\_code} 字典与解释模版，保证同一类拒绝/降级在不同语言下仍可回放与审计。
+  \item \textbf{Fail-Safe 对齐。}当本地义务与可用证据冲突时，触发第4章 T1--T3，并在 D1--D4 与 Tier-R1/Tier-R2 纪律下退化；不得以「语言不支持」作为无证据绕过。
+\end{itemize}
+
+\section{多语言 gate：进入 Track A 的准入纪律}
+\textbf{主线：}\EvalFramework{}。多语言 gate 的作用是把「是否可部署结论」从模糊承诺变成可审计准入：
+\begin{itemize}
+  \item \textbf{输入。}该语言/法域的套件覆盖度、误报成本、回放与审计字段完备度（三平面最小字段可 join）、以及热路径 S1 预算影响。
+  \item \textbf{输出。}明确该语言是否进入 Track A；若未进入，则其结论默认归入 Track B（机制/上界），并在第6章 bounded deployment contract 中收缩能力包（例如禁用高副作用工具或收窄检索域）。
+\end{itemize}
+
+\section{多语评测作为多轨的一等公民（不是翻译）}
+\textbf{主线：}\EvalFramework{}。多语/地域轨道必须以一等公民方式进入多轨体系：各自拥有套件版本、聚合逻辑与报告模板，并在统一治理决策板上保留轨道语义。\textbf{统一治理决策不等于统一分数：}多语轨道的风险语义不可被隐式加权压缩；若必须压缩，须显式披露权重与损失，并将其作为新的主张前提写入第6章 claim discipline。
+
+\section{中文 detector development：从语义到可部署制品}
+\textbf{主线：}\ControlPlane{}。核心产出是可版本化制品，而不是散文经验：
+\begin{itemize}
+  \item \textbf{检测器/规则包。}面向中文与多语特有攻击面（分词陷阱、混合语言注入、地域语料投毒）开发检测器家族，并与 \texttt{policy\_version} 联合版本化。
+  \item \textbf{证据绑定。}检测器输出必须写入证据面字段（\texttt{decision\_record\_id} 可 join），并进入第5章 Minimum Release Evidence Pack 的条目引用链。
+  \item \textbf{冷路径迭代。}昂贵适应（阈值全局搜索、检测器训练、套件扩充）必须在 ORA 冷路径完成，产出候选—评测—签批—生效链，避免线上隐性分叉。
+\end{itemize}
+
+\keytakeaway{多语与中国能力不是支持团队的翻译工作，而是全局控制面与证据引擎的核心 intelligence：它提供 geo-specific semantics 的义务映射、语言 gate、检测器制品与可放行证据链，使 Track A 可部署结论在不同法域/语言下仍可审计、可回放、可辩护。}
+
+% =============================
+% 第8章
+% =============================
+\chapterstarter{统一研发框架：theory--system--benchmark--release operating program}{
+本章把「统一研发框架」从 org chart/路线图升级为可运行的 operating program：用 theory 定义可主张性质与边界；用 system 把性质压到 \SafetyKernel{} 与 T/D/S/Tier/ORA 的可验收接口；用 benchmark 把性质变成测量义务、证据包与多轨套件；用 release 把证据变成 bounded deployment contract 与可对外陈述。核心机制是 One DTL Security Program：以统一对象语言与统一制品链路避免割裂团队并行推进。
+}{
+\begin{itemize}
+  \item theory$\rightarrow$system$\rightarrow$benchmark$\rightarrow$release：闭环而非并行列表。
+  \item One DTL Security Program：单一真源对象、单一门（Track A 证据包）、单一节律。
+  \item 四个一级单元 + 三条长期研究主线：用 artifact 协同，而不是用会议对齐。
+\end{itemize}
+}
+
+\section{theory--system--benchmark--release：把主张变成可运行流水线}
+\textbf{主线：}综合。\textbf{theory} 产出 claim discipline 与 geo-specific semantics；\textbf{system} 把其落到 \texttt{event}\,$\rightarrow$\,\texttt{decision}\,$\rightarrow$\,\texttt{evidence} 与 T1--T3/D1--D4/S1/Tier-R/ORA；\textbf{benchmark} 把其变成 benchmark constitution、acceptance contract 与两类证据包；\textbf{release} 将证据输入统一治理决策板并输出 bounded deployment contract（放行/限权/回滚）。该链路的关键约束是：所有结论必须可引用 \texttt{policy\_version} 与可 join 的证据键（\texttt{correlation\_id} / \texttt{decision\_record\_id}）。
+
+\section{One DTL Security Program（建议写法）}
+\textbf{主线：}综合。One DTL Security Program 是把 theory--system--benchmark--release 压成同一条企业流水线：以统一对象语言约束各单元产出，以统一证据包约束 Track A 放行，以统一节律把事故与回归纳入演化。其对外结果不是「我们做了很多事」，而是「在明示前提下，我们可交付哪些 bounded guarantees，并附带可审计证据包」。
+
+\section{四个一级单元：职责与核心 artifact}
+\textbf{主线：}综合。
+\begin{itemize}
+  \item \textbf{Theory \& Semantics Unit（理论与语义）。}职责：风险分类、义务语义、Non-goals/Preconditions/Degradation regimes、geo-specific semantics（含多语）与理由码体系。核心 artifact：taxonomy、obligation mapping、claim discipline 模板、\texttt{rationale\_code} 字典。
+  \item \textbf{System \& Kernel Unit（系统与内核）。}职责：\SafetyKernel{} 最小接口、事件类型、强制挂点、T/D/S/Tier/ORA 的实现与回放 harness。核心 artifact：kernel API、策略 DSL、执行挂点规范、回放与差分重跑工具链。
+  \item \textbf{Benchmark \& Evidence Unit（基准与证据）。}职责：benchmark constitution、acceptance contract、多轨套件、机制证据包与放行证据包的生成与校验。核心 artifact：RQ-first 映射表、套件版本、Mechanism/Release Evidence Pack 模板与流水线。
+  \item \textbf{Release \& Operations Unit（发布与运营）。}职责：统一治理决策板、差分重跑策略、例外到期机制、SRE/IR 闭环与审计抽样。核心 artifact：release checklist、决策板记录、回滚预案、审计与抽样计划、Tier-R2 authority boundary 配置。
+\end{itemize}
+
+\section{三条长期研究主线：以“可升级的保证边界”组织研究}
+\textbf{主线：}综合。
+\begin{itemize}
+  \item \textbf{主线1：可主张保证的扩大。}把 black-box$\rightarrow$semi-white-box$\rightarrow$white-box 的可观测性升级为更强 bounded guarantees（更多可回放、更少抽样误差）。
+  \item \textbf{主线2：非确定与多目标权衡的证据化。}将置信区间、最坏情形与成本—时延—安全—效用联合目标纳入可审计证据包，而非事后解释。
+  \item \textbf{主线3：对抗演化与受控适应。}以 ORA 冷路径证明边际增益与回滚纪律，避免线上隐性策略漂移，并与 Track A 放行语义保持一致。
+\end{itemize}
+
+\section{如何协同运行：避免割裂团队并行推进}
+\textbf{主线：}综合。程序化协同依赖三条硬约束：
+\begin{itemize}
+  \item \textbf{单一真源对象。}统一的事件/证据 schema 与版本语义（\texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}）；禁止各单元自造口径导致无法 join。
+  \item \textbf{单一门。}Track A 放行必须携带第5章 Minimum Release Evidence Pack；Track B 结果不得外推；例外必须签批并设到期。
+  \item \textbf{单一节律。}事故$\rightarrow$用例入库$\rightarrow$回归闸$\rightarrow$版本单调发布；每次发布执行差分重跑与证据包审阅，使理论、系统、基准与发布共同演化。
+\end{itemize}
+
+\keytakeaway{第8章把统一研发写成 operating program：以 theory--system--benchmark--release 的统一制品链路与 One DTL Security Program 的硬约束收口组织协同，避免割裂团队并行推进，并把每次发布变成可辩护、可回放、可撤回的 bounded contract 升级。}
+
+% =============================
 % 附录
 % =============================
 \appendix
-
-\chapter{地域化与多语言评测}
-法域义务与语言引入与全球单一分数不可通约的风险语义。可行模式包括：带法域标签的本地化套件库；共享执行基础设施但类别、聚合与报告模板相异的并行轨道；语言感知检测器与分词陷阱；混合语言输入；以及从监管类别到测试义务的显式映射。证据包须标明轨道、套件版本及纳入统一发布决策板的理由。地域/多语轨道的对外结论须遵守第5章 \textbf{Track A/B 纪律}：仅当该轨被显式纳入 Track A 契约时才可作为可部署放行依据，否则默认归入 Track B 或等效压力轨。
 
 \chapter{术语与角色边界}
 \textbf{安全判断提供方}负责策略解释、风险评分、检测制品、可解释性载荷及适于审计的结构化证据。\textbf{执行平台}提供网络、扩缩容、编排 \textsc{sla} 与负载管理。边界清晰可避免「任一侧均无法产出可回放轨迹」的归属真空。对外沟通时，内部项目命名宜映射至上述中性角色。
