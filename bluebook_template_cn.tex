@@ -77,9 +77,9 @@
 
 \textbf{（二）为什么不是「安全功能集合」。}检测器、脱敏、\textsc{waf}、日志各自最优，往往导致\textbf{全局次优}：重复拦截、绕过路径、口径不一致的日志、无法合并的 KPI。更致命的是缺乏\emph{统一事件类型与证据关联 ID}：无法回答「同一次请求在网关通过、在工具层被拒、最终对用户展示了什么」的单一叙事，放行与事故复盘分裂。
 
-\textbf{（三）为什么只有 control plane 能统一 judgment / execution / evidence / release。}四元必须共享：\textbf{同一策略版本}约束在线求值与离线聚合；\textbf{同一证据 schema} 贯穿运行时日志、影子对比与签批附件；\textbf{同一 release 对象}（策略包 + 模型路由 + 检测器/规则包 + 必要遥测切片）支持\emph{差分重跑}与责任切片。只有控制面提供这一\emph{版本面与编目}；模型平台与功能集合均不具备把四元压成单一可辩护对象的构造能力。
+\textbf{（三）为什么只有 control plane 能统一 judgment / execution / evidence / release。}只有控制面能够要求同一 \texttt{policy\_version} 约束在线求值与离线聚合，并以统一 evidence schema 与 release object 支持差分重跑与责任切片；模型平台与功能集合均无法承担该闭合义务。
 
-\noindent 下图收束前文的否定性论证：控制面的必要性并不来自“功能更多”，而来自它是唯一能把义务、判断、执行、证据与放行压入同一责任边界的总对象。
+\noindent 下图收束前文论证：控制面的必要性不来自“功能更多”，而来自它是唯一能把义务、判断、执行、证据与放行压入同一责任边界的总对象。
 \begin{figure}[htbp]
   \centering
   \IfFileExists{figures/Fig1.png}{\includegraphics[width=0.9\textwidth]{figures/Fig1.png}}{%
@@ -88,14 +88,17 @@
   \caption{Unified AI Security Control Plane 的责任边界拓扑}
   \label{fig:responsibility-topology}
 \end{figure}
-\noindent 本图不是模块枚举，而是企业级 AI 安全义务的责任边界拓扑：上方的 benchmark governance 负责义务与测量条件的定义；中间的 control plane 承担 judgment、routing、scoring 与 policy evaluation；右侧的执行环境承接执行、编排与 SLA 而不解释安全语义；右下的 evidence/release gating 将行为提升为可放行、可审计对象；左侧的 Chinese \& multilingual intelligence 作为 geo-specific semantics 的语义源，防止全球平均语义吞没本地义务。
 
 \section{阅读约定与主张口径（摘要）}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺的是\emph{可部署、可测量、可撤回}的企业安全契约：在明示前提（见第6章）下，通过 \DecoupledSafety{} 与 \EvalFramework{} 提供有界保证。\textbf{非目标}包括：不对任意开放自然语言任务给出全局安全证明；不将单次离线红队分数等同于生产放行；不将不同评测轨（尤其「可部署结论轨」与「机制上界压力轨」）混读为单一总分。完整非目标、前提与退化态见第6章。
 
-\noindent\textbf{三条硬约束（避免被读成“模块集合”）。}(i) \textbf{边界硬约束：}安全 judgment / evidence / release 属于控制面；SLA/编排属于执行平台；二者通过事件与证据键（\texttt{correlation\_id}、\texttt{decision\_record\_id}、\texttt{policy\_version}）对接，而非“共同解释语义”。(ii) \textbf{语义硬约束：}多轨不是多打几套分，而是语义分叉；治理汇合不允许隐式加权把多轨压成单一 score。 (iii) \textbf{产出硬约束：}每章最终都必须回指到可发布的产出物：证据包（Mechanism/Release）、acceptance contract、claim discipline 与 bounded deployment contract；否则视为未进入 guarantee production system。
+\noindent\textbf{三条硬约束（避免被读成“模块集合”）。}(i) \textbf{边界：}judgment/evidence/release 属于控制面；SLA/编排属于执行平台；以 \texttt{correlation\_id}/\texttt{decision\_record\_id}/\texttt{policy\_version} 对接。(ii) \textbf{语义：}多轨保留语义分叉；统一决策不等于统一分数。(iii) \textbf{产出：}必须回指证据包、contract、claim discipline 与 bounded deployment contract，否则不构成企业级保证。
 
-\par\noindent 从工程上说，这种保证生产至少要求四个对象在同一版本面下闭合：\textbf{judgment 必须可执行为强制动作，execution 必须沉淀为可 join 的 evidence，evidence 必须进入 release 材料与回归约束，而 release 又必须反过来约束后续 benchmark、policy 与线上配置。}这也是本书理解“系统边界”的方式：它规定了谁生产义务、谁执行义务、谁记录义务、谁对义务做放行辩护。
+\section{责任拓扑：图~\ref{fig:responsibility-topology} 的系统边界翻译}
+\textbf{主线：}\ControlPlane{}。图~\ref{fig:responsibility-topology} 不是模块枚举，而是责任边界拓扑：benchmark governance 负责义务与测量条件定义；control plane 承担 judgment、routing 与 policy evaluation；执行环境承接执行、编排与 \textsc{sla} 而不解释安全语义；evidence/release gating 将行为提升为可放行、可审计对象；Chinese \& multilingual intelligence 作为 geo-specific semantics 的语义源进入 policy 与证据口径。
+
+\section{保证生产的工程判据：版本面与 join 条件}
+\textbf{主线：}\ControlPlane{}。\textbf{工程判据：}一条可对外陈述的 bounded guarantee，必须能在证据面被可 join 地复原。最低要求包括：\texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}、\texttt{rationale\_code}，以及（若触发 Tier-R2）\texttt{approval\_ref}。缺任一键，则放行材料无法证明“当时依据什么、执行了什么、记录了什么”，不构成可辩护保证对象。
 
 \section{资产、对手模型与运行假设}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。受保护资产包括：用户与企业数据的机密性，提示与检索内容的完整性，工具侧效果与参数完整性与不可否认性，服务在 \textsc{sla} 内的可用性，以及审计记录的完整性。考虑的对手包括：构造对抗性提示；经检索信道投毒或泄露；滥用或串联工具调用；操纵会话与工作流状态；滥用运营面（如文档中的隐匿指令）。内部威胁主要通过职责分离、证据不可篡改与工具最小权限来缓解——而非仅靠模型对齐。
