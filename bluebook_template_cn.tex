@@ -362,8 +362,9 @@
 \keytakeaway{第4章把运行时写清三件事：热路径上的 T/D/S 纪律、冷路径上的 Tier-R2 与 ORA 适应、以及全程可 join 的证据——使强制协议与第3章三平面及第5章放行共用同一对象语言。}
 
 \section{双时间尺度风险自适应控制：online enforcement 与 offline release supervision}
-\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书的方法论核心不是「评测驱动控制」的口号，而是一个\textbf{双时间尺度控制系统}：\textbf{快时间尺度（热路径）}在单请求预算内实现实例级强制（online controller）；\textbf{慢时间尺度（冷路径）}在版本级更新策略、阈值、能力包并监督放行（offline estimator/policy updater/release supervisor）。二者通过证据面与发布闸耦合：热路径每次决策都写入可 join 的 evidence；冷路径只产出\emph{下一版}可发布配置（\texttt{policy\_version} 单调），并以放行证据包与 bounded contract 限定对外陈述。
-\noindent 因而，第5章不再把评测理解为独立评分系统，而将其视为该双时间尺度控制架构中的冷路径编译器：把测量、语义分叉与多轨证据转化为可用于 release defense 的治理对象。
+\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书的方法论核心，不是「评测驱动控制」的一般性口号，而是一个\textbf{双时间尺度的风险自适应控制系统}。其\textbf{快时间尺度}位于在线热路径：系统在单请求、单会话预算内，对实例级 \texttt{event} 完成 \texttt{policy} 求值、动作派发、Fail-Safe 收敛与证据追加；其\textbf{慢时间尺度}位于离线冷路径：系统在版本级别聚合 benchmark、risk profile、release gating、regression 与 ORA 结果，并据此更新 \texttt{policy\_version}、能力包、检测器包、索引世代与放行边界。二者通过证据面与发布闸耦合：热路径每次 \texttt{decision} 都必须写入可 join 的 \texttt{evidence}，冷路径则只允许以版本化、可签批、可回滚的配置更新控制律。
+
+因此，运行时安全与评测治理不是两套平行系统，而是同一控制系统的快慢两层。热路径负责在预算内维持实例级安全与服务连续性，冷路径负责将测量、漂移、失败模式与 release decision 组织为可持续更新的约束体系。前者决定「本次请求如何被处理」，后者决定「未来哪些能力被允许持续存在、在何种条件下继续被主张为可部署保证」。也正因如此，第 5 章不再把评测理解为独立评分系统，而将其视为该双时间尺度控制架构中的冷路径编译器：它负责把多轨测量、语义分叉与治理约束编译为可进入 release defense 的证据对象。
 
 % =============================
 % 第5章
@@ -379,10 +380,14 @@
 }
 
 \section{语义分叉与治理汇合：semantic bifurcation with governance convergence}
-\textbf{主线：}\EvalFramework{}。多轨不是“多打几套分”，而是承认企业安全存在多个不可通约的语义空间（semantic bifurcation）；它们可共享执行骨架，但必须在放行时治理汇合（governance convergence）——以证据包与契约条款输出统一决策，而非压缩为单一 score。
+\textbf{主线：}\EvalFramework{}。在上述双时间尺度控制系统中，\EvalFramework{} 的职责，不是输出抽象总分，而是组织企业安全中多个不可通约的语义空间。企业级 AI 安全并不存在单一评测语义：全球安全稳健性、法域合规性、语言特定风险与组织治理义务，往往在测试对象、聚合逻辑与放行语义上彼此不同。由此，本书中的多轨评测不应被理解为「多跑几套测试」，而应被理解为 semantic bifurcation：在共享执行骨架上保留不同语义轨道的独立性，并在放行时实现 governance convergence，即通过同一治理决策板、同一 acceptance contract 与同一 evidence pack 体系完成可部署结论的汇合。
+
+这一结构的关键不在于压缩分数，而在于统一治理。统一治理决策统一的是「是否放行、以何种能力包放行、在何种 bounded contract 下放行」，而不是把不同语义轨道强行压缩为单一 score。凡需要跨轨压缩的地方，都必须显式披露其权重、损失与适用范围，并将其视为新的主张前提，而不能被当作天然存在的「总分事实」。因此，本章中的 evaluation 从一开始就不是测分工具，而是 guarantee production system 中的语义编译层：它决定系统可以在哪些语义空间中、以何种证据强度，对外主张何种保证。
 
 \section{从测量到控制选择：评测输出作为决策信号（decision signals）}
-\textbf{主线：}\EvalFramework{}。在图~\ref{fig:dual-timescale-loop} 所示闭环中，evaluation 的职责不是给出抽象分数，而是把多轨测量编译成 runtime control 与 release governance 可消费的\emph{decision signals}。其最低要求是可追溯到：RQ、轨道标识（Track A/B）、以及 evidence 条目与回放样本（\texttt{correlation\_id}/\texttt{decision\_record\_id}）。
+\textbf{主线：}\EvalFramework{}。在本书中，评测的输出并不终止于报告，而是被编译为 \ControlPlane{} 与 release governance 可消费的\emph{decision signals}。它们回答的不是「哪个模型分更高」，而是：哪些场景需要升级到更强控制深度，哪些能力包必须被收缩，哪些法域或语言尚不足以进入可部署轨，哪些条件必须触发 D1--D4、Tier-R2 或 release gating。换言之，evaluation 的真正功能，是把多轨测量转化为 \texttt{policy} 选择、能力边界与治理动作的输入。
+
+这种 decision-signal 只有在满足三项条件时才具备治理意义：第一，它必须能回指明确的 RQ、轨道标识与 acceptance contract 条款；第二，它必须能被 evidence graph 中的 \texttt{correlation\_id} 与 \texttt{decision\_record\_id} 复原为具体事件、具体决策与具体样本；第三，它必须能够被 release evidence pack 引用，而不是停留在局部 dashboard 或实验结论。只有满足这三项条件，测量才真正从「分数」转化为「放行答辩所需的治理信号」，而第 5 章的后续内容——RQ-first、benchmark constitution、acceptance contract、多轨纪律与两类证据包——正是围绕这一编译关系展开。
 
 \section{RQ-first：从研究问题到放行结论的证据组织}
 \textbf{主线：}\EvalFramework{}。证据引擎的入口不是「一张总分表」，而是可审计的问题集合：每个 RQ 都绑定（i）允许给出的结论类型；（ii）必需证据来源；（iii）进入放行证据包的最低门槛。
