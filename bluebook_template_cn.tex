@@ -31,16 +31,18 @@
 \makebluebookfrontmatter
 
 \begin{bluebookabstract}
-本蓝皮书采用\emph{一主两翼}结构：\textbf{总对象}为 \ControlPlane{}——在统一边界内同时承载安全判断、运行时强制与可复核证据；\textbf{系统原理翼}为 \DecoupledSafety{}——策略优先于模型偏好，以可组合接口将义务外置并可测；\textbf{证据与治理引擎翼}为 \EvalFramework{}——以基准宪章、验收契约、多轨纪律与最小证据包，将测量、回归与发布闸绑为同一条证据链。核心论点是：企业级 AI 安全属于\emph{控制面}问题；保证须由外置强制与可度量证据共同提供，而非仅依赖静态对齐或零散护栏。本书给出的是\emph{有界、可部署}主张：明示前提、非目标与退化态，而非自然语言意义上的全局安全证明。
+本蓝皮书的科学对象不是「AI 安全平台」或「控制面架构说明书」，而是一个\textbf{保证生产系统（guarantee production system）/义务闭合机器（obligation closure machine）}：它把义务语义（含 geo-specific semantics）、运行时控制、证据记录与放行治理闭合为\emph{同一版本化对象}，从而持续产出企业可签署、可审计、可回放、可收缩的\emph{bounded guarantees}。本书采用\emph{一主两翼}结构来实现该生产函数：\textbf{主}为 \ControlPlane{}——在统一边界内承载 judgment、execution、evidence、release 的四元闭合；\textbf{翼A}为 \DecoupledSafety{}——策略优先于模型偏好，以可组合接口将义务外置并可测；\textbf{翼B}为 \EvalFramework{}——以基准宪章、验收契约、多轨纪律与证据包，把测量、回归与发布闸绑为同一条证据链。本书给出的是\emph{有界、可部署}主张：明示前提、非目标与退化态，而非自然语言意义上的全局安全证明。
 \end{bluebookabstract}
 
 \executivesummary{
 \begin{itemize}
-  \item \textbf{一主两翼。} \textbf{主}——\ControlPlane{}：统一边界内的判断、强制与证据。\textbf{翼A}——\DecoupledSafety{}：外置、策略优先、可协议化降级。\textbf{翼B}——\EvalFramework{}：契约、多轨纪律、最小证据包与发布闸。
+  \item \textbf{总对象升维。}本书不是「模块集合」或「安全平台蓝图」，而是一台\textbf{保证生产系统}：把义务语义$\rightarrow$判断$\rightarrow$强制$\rightarrow$证据$\rightarrow$放行陈述闭合为同一版本对象，持续产出 bounded guarantees（可签署、可审计、可回放、可收缩）。
+  \item \textbf{一主两翼。} \textbf{主}——\ControlPlane{}：四元闭合（judgment/execution/evidence/release）。\textbf{翼A}——\DecoupledSafety{}：外置、策略优先、Fail-Safe 可协议化。 \textbf{翼B}——\EvalFramework{}：Evidence Engine + Release Defense（契约、多轨纪律、证据包与发布闸）。
   \item \textbf{背景。} 生产 AI 已复合化（编排、\RAG{}、工具、记忆、多轮智能体）；风险覆盖 CIA 与治理，远超出有害输出。
   \item \textbf{问题。} 能力扩张快于\emph{一致执行、可追溯、可发布级保证}；单模型对齐与松耦合护栏不足以闭合系统攻击面。
   \item \textbf{边界。} 本书不提供全局自然语言安全证明；提供在明示前提与 fail-safe 退化下的\emph{可部署、可测量、可撤回}有界保证（第6章展开）。
-  \item \textbf{交付物。} 威胁模型与目标；分层架构与 \SafetyKernel{} 接口；含 fail-safe 协议的运行时与 \RAG{}/工具模式；含 RQ 映射、Track A/B 纪律与最小证据包的评测框架；证据图谱与分阶段路线；附录收地域化评测与角色边界。
+  \item \textbf{方法论铁律。} \textbf{统一治理决策不等于统一分数：}多轨评测在共享执行骨架上保留语义分叉（semantic bifurcation），并在放行时治理汇合（governance convergence），以证据包与契约输出决策，而非压缩为单一 score。
+  \item \textbf{交付物（以保证为中心）。} \textbf{热路径}：\SafetyKernel{} 最小接口与 T/D/S1/Tier-R 协议化降级；\textbf{冷路径}：ORA 带外适应与版本单调发布；\textbf{证据与放行}：Minimum Mechanism/Release Evidence Pack、acceptance contract、claim discipline 与 bounded deployment contract。
 \end{itemize}
 }
 
@@ -48,7 +50,7 @@
 % 第1章
 % =============================
 \chapterstarter{统一 AI 安全控制面：问题陈述与系统边界}{
-本章只完成一件事：论证\emph{为什么必须是控制面}——用可反驳的失败命题、义务—断裂链、否定性对比与四元闭合，把边界、威胁表与目标收紧为总对象 \ControlPlane{}；阅读口径与第6章 claim discipline 对齐。
+本章只完成一件事：论证\emph{为什么必须是一台义务闭合机器}——控制面只是其系统边界形式。我们用可反驳的失败命题、义务—断裂链、否定性对比与四元闭合，把边界、威胁表与目标收紧为总对象 \ControlPlane{}，并把它显式命名为\textbf{保证生产系统}：持续把义务语义编译为可执行强制、可 join 证据与可对外陈述的 bounded contract；阅读口径与第6章 claim discipline 对齐。
 }{
 \begin{itemize}
   \item 失败命题与问题陈述；义务—控制点—断裂与四元闭合。
@@ -64,7 +66,7 @@
 \textbf{主线：}\ControlPlane{}。本蓝皮书固定两类责任：（i）\emph{安全判断}——策略解释、风险评分、允许/拒绝/改写、可解释载荷与面向治理的证据；（ii）\emph{执行平台}——网络、扩缩容、编排 \textsc{sla}、算力与放置。\ControlPlane{} 的语义锚点是\emph{策略与证据}，不是替执行平台背锅，也不是把安全降格为「换更大模型」。凡进入提示边界的外部物（文档、检索块、工具契约、\textsc{api} 响应）均视为攻击面组成部分，须与判断、强制与证据同一编目。
 
 \begin{problemstatement}
-可反驳的失败命题如下：在保持\emph{同一发布语义}（对谁承担何种义务、何种数据不得出境、何种工具不得越权）的前提下，若仅通过\emph{更强单模型}或\emph{更多离线对齐与红队分数}，而不引入横跨输入—检索—工具—编排—日志的统一控制与证据面，则无法在复合系统中持续满足「策略—线上行为—放行材料」三者一致。因此中心问题不是「模型是否更对齐」，而是：在动态语境、外部检索、工具副作用、记忆与多租户下，\textbf{判断（judgment）、执行（execution）、证据（evidence）、放行（release）}是否能在\emph{同一版本面与关联 ID}下闭合。若四者不同框，则必出现至少一类系统级断裂：线上生效策略与签字放行依据不一致；或审计无法回答「当时依据哪版策略、哪条检索、哪次工具调用」；或回归与生产使用不同事件定义。结论：必须引入 \ControlPlane{} 作为总对象——统一语义、确定性强制挂点与可发布级证据链（与第5--6章同构）。
+可反驳的失败命题如下：在保持\emph{同一发布语义}（对谁承担何种义务、何种数据不得出境、何种工具不得越权）的前提下，若仅通过\emph{更强单模型}或\emph{更多离线对齐与红队分数}，而不引入横跨输入—检索—工具—编排—日志的统一控制与证据面，则无法在复合系统中持续满足「策略—线上行为—放行材料」三者一致。因此中心问题不是「模型是否更对齐」，而是：在动态语境、外部检索、工具副作用、记忆与多租户下，\textbf{判断（judgment）、执行（execution）、证据（evidence）、放行（release）}是否能在\emph{同一版本面与关联 ID}下闭合。若四者不同框，则必出现至少一类系统级断裂：线上生效策略与签字放行依据不一致；或审计无法回答「当时依据哪版策略、哪条检索、哪次工具调用」；或回归与生产使用不同事件定义。\textbf{结论不是“再做一个平台”，而是构造一台义务闭合机器：}将 judgment 编译为可执行强制，将强制沉淀为可 join 的 evidence，并把 evidence 编译为 release gating 与 bounded contract；当前提破坏时按协议退化（T/D/S1/Tier-R 与 ORA），从而使企业能持续生产与维护可辩护保证。
 \end{problemstatement}
 
 \section{控制面必要性：义务—断裂点—总对象}
@@ -81,6 +83,8 @@
 
 \section{阅读约定与主张口径（摘要）}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺的是\emph{可部署、可测量、可撤回}的企业安全契约：在明示前提（见第6章）下，通过 \DecoupledSafety{} 与 \EvalFramework{} 提供有界保证。\textbf{非目标}包括：不对任意开放自然语言任务给出全局安全证明；不将单次离线红队分数等同于生产放行；不将不同评测轨（尤其「可部署结论轨」与「机制上界压力轨」）混读为单一总分。完整非目标、前提与退化态见第6章。
+
+\noindent\textbf{三条硬约束（避免被读成“模块集合”）。}(i) \textbf{边界硬约束：}安全 judgment / evidence / release 属于控制面；SLA/编排属于执行平台；二者通过事件与证据键（\texttt{correlation\_id}、\texttt{decision\_record\_id}、\texttt{policy\_version}）对接，而非“共同解释语义”。(ii) \textbf{语义硬约束：}多轨不是多打几套分，而是语义分叉；治理汇合不允许隐式加权把多轨压成单一 score。 (iii) \textbf{产出硬约束：}每章最终都必须回指到可发布的产出物：证据包（Mechanism/Release）、acceptance contract、claim discipline 与 bounded deployment contract；否则视为未进入 guarantee production system。
 
 \section{资产、对手模型与运行假设}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。受保护资产包括：用户与企业数据的机密性，提示与检索内容的完整性，工具侧效果与参数完整性与不可否认性，服务在 \textsc{sla} 内的可用性，以及审计记录的完整性。考虑的对手包括：构造对抗性提示；经检索信道投毒或泄露；滥用或串联工具调用；操纵会话与工作流状态；滥用运营面（如文档中的隐匿指令）。内部威胁主要通过职责分离、证据不可篡改与工具最小权限来缓解——而非仅靠模型对齐。
