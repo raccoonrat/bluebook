@@ -482,66 +482,98 @@
 }
 
 \section{Claim discipline（主张口径）}
-\textbf{主线：}综合。对外陈述必须同时写清：我们主张什么、我们不主张什么、在何种前提下成立、前提破坏时退化到何种最低形态；并声明不同观测/控制能力分层下可主张的保证上限。
+\noindent 本节的任务，不是再次解释系统为何重要，而是规定：\textbf{在本书框架下，什么样的安全陈述才构成合法的企业级 guarantee statement。}任何进入对外材料、合同文本、发布说明或高层决策摘要的主张，都必须能够被约束到明确的 scope、前提条件、退化语义、部署分层与证据包条目；任何无法完成这一编译的主张，都不得被表述为可部署保证，而应降级为研究议程、设计意图或非目标。由此，claim discipline 在本书中不是修辞规范，而是 guarantee production system 的语法层：它规定系统能够生产什么样的保证，以及什么样的陈述不被允许进入 release defense。
 
 \subsection{保证语法（Guarantee grammar）：什么样的陈述才被允许}
-\textbf{主线：}综合。\textbf{允许进入对外材料的 guarantee statement，必须同时声明：}
+一条允许进入对外材料、发布摘要或 contract 附件的 guarantee statement，至少必须同时包含以下六类字段：
 \begin{enumerate}
-  \item \textbf{Scope：}场景/租户/法域/语言/能力包边界；
-  \item \textbf{Invariant：}服务不变量（例如 S1）；
-  \item \textbf{Degradation semantics：}T/D/Tier-R/ORA 的退化语义；
-  \item \textbf{Preconditions：}成立前提；
-  \item \textbf{Evidence references：}可引用的证据包条目与契约条款；
-  \item \textbf{Deployment regime：}white-box / semi-white-box / black-box。
+  \item \textbf{范围（scope）：}适用的租户、法域、语言、工作流与能力包边界；
+  \item \textbf{不变量（invariants）：}系统在该范围内承诺维持的性质，例如同步服务不变量 S1、允许的动作空间或 authority boundary；
+  \item \textbf{退化语义（degradation semantics）：}当前提不满足或风险越界时，系统将退入何种最低服务形态，例如 D1--D4、Tier-R1/Tier-R2 或能力包收缩；
+  \item \textbf{前提条件（preconditions）：}使该保证成立所依赖的观测、治理、依赖与契约前提；
+  \item \textbf{证据基础（evidence basis）：}能够被引用的 evidence pack 条目、轨道标识、样本回放键与版本号；
+  \item \textbf{部署分层（deployment regime）：}该保证是在 white-box、semi-white-box 还是 black-box 条件下成立。
 \end{enumerate}
-\noindent 缺任一项，则该陈述不被允许进入对外材料或合同指标。\textbf{Non-goals}是保证语法的负空间：禁止生成无法被证据包与契约约束的泛化句式。
+\noindent 缺少上述任一项的陈述，都不应被写入 release decision、对外陈述或客户承诺。\textbf{Non-goals} 构成该语法的负空间：任何无法被上述六类字段约束和引用的“更强说法”，默认不被允许。
 
 \subsection{Claim-to-evidence 编译：从陈述到证据包与契约条款的映射}
-\textbf{主线：}\EvalFramework{}。\textbf{编译规则：}每条 claim 必须同时满足下列可追溯性，否则不得进入 release defense。
-\begin{itemize}
-  \item \textbf{编译到 contract：}可被映射为 acceptance contract 的条款集合（阈值/例外/能力包/S1/退化语义）。
-  \item \textbf{编译到 evidence：}在 Minimum Release Evidence Pack 中找到引用链（\texttt{policy\_version}、\texttt{correlation\_id}/\texttt{decision\_record\_id}、轨道标识、必要审批指针）。
-\end{itemize}
-\noindent 无法编译的陈述视为不可验证主张，应降级为研究议程或非目标。
+在本书中，claim discipline 不是声明清单，而是一种编译关系。每一条可部署主张都必须能够被编译为三类对象：
+\begin{enumerate}
+  \item \textbf{acceptance contract 条款：}即这条主张在何种阈值、例外与能力包边界下成立；
+  \item \textbf{release evidence pack 引用链：}即该主张可由哪些 track、哪些条目、哪些 \texttt{correlation\_id} / \texttt{decision\_record\_id}、哪些 \texttt{policy\_version} 与哪些审批记录支撑；
+  \item \textbf{release decision 对象：}即该主张最终对应的是放行、限权放行、灰度还是回滚。
+\end{enumerate}
+\noindent 若某条陈述无法同时映射到 contract、evidence 与 release decision，则它不能被视为可验证保证；它应被降级为研究方向、设计目标，或明确写入 non-goals。换言之，合法主张不是“我们认为成立”，而是“可以被编译、被引用、被检查、被收缩”。
 
 \subsection{Non-goals（不主张）}
-\textbf{不主张：}（i）对任意自然语言任务与任意工具生态的全局可判定安全；（ii）将单次离线评测或单一攻击成功率等同于生产安全；（iii）将 Track B 上界结果不经迁移论证写入对外「可部署结论」；（iv）保证模型永不产生事实错误——本书控制的是\emph{策略义务与证据}，而非一般真理；（v）在缺少 \texttt{policy\_version} 与证据面 join 键的情况下，对外声称「已审计」或「可回放」。
+本书不主张以下类型的陈述：
+\begin{enumerate}
+  \item 对任意自然语言任务、任意工具生态与任意外部语境给出全局、完备、可判定的安全证明；
+  \item 将单次离线红队结果、单一攻击成功率或局部 benchmark 分数直接等同于生产安全；
+  \item 将 Track B 或其他机制/上界轨的结果，不经迁移论证而写入可部署结论；
+  \item 以“模型更聪明”替代 policy、evidence、contract 与 release 对象；
+  \item 在缺少 \texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id} 或可引用审批记录的情况下，对外声称“已审计”“可回放”或“可辩护”。
+\end{enumerate}
+\noindent 这些非目标不是谦逊性声明，而是为了防止系统被误读为全局安全证明器或纯模型能力平台。
 
 \subsection{Bounded guarantees（有界保证）}
-\textbf{本书可主张：}在明示前提与可观测预算下，\ControlPlane{} 结合 \DecoupledSafety{} 与 \EvalFramework{} 提供可部署、可测量、可撤回的风险控制与证据链。典型可验收保证包括：\textbf{S1} 同步可应答；\textbf{T1--T3$\rightarrow$D1--D4} 的可测迁移纪律；\textbf{Tier-R2} 的 authority boundary；\textbf{三平面字段}可 join 的决策与证据闭合；以及（若启用）\textbf{ORA} 的带外适应与版本单调上线。每条保证必须能引用第5章放行证据包条目，而不是以「更聪明」的叙述替代。
+在明示前提成立时，本书允许主张的 guarantee 是有界且可撤回的。典型可验收保证包括：
+\begin{enumerate}
+  \item 同步接口满足 \textbf{S1}，即在降级情况下仍返回机器可处理结果体；
+  \item 当 \textbf{T1--T3} 成立时，系统仅在预声明的 \textbf{D1--D4} 空间内退化，并留下理由码与证据条目；
+  \item \textbf{Tier-R2} 的 authority boundary 被制度化，运行时执行身份不能自批恢复；
+  \item 三平面字段可 join，使 judgment、execution、evidence 与 release 能在同一版本面下被重构；
+  \item 若启用 ORA，则其带外适应与版本单调更新可以被回放、签批与回滚。
+\end{enumerate}
+\noindent 这些保证的共同特点是：它们都必须能够引用具体 evidence pack 条目，而不能依赖“系统通常会更安全”“模型倾向更好”之类无法编译的叙述。
 
 \subsection{Preconditions（前提条件）}
-\textbf{保证成立依赖：}
-\begin{itemize}
-  \item \textbf{理论/语义前提}——风险分类、策略 schema 与事件类型在版本 $P$ 内可判定；不可判定部分通过验收契约显式列为残余风险。
-  \item \textbf{部署/观测前提}——关键遥测、日志不可篡改与关联 \textsc{id} 可用；三平面最小字段可落盘并可 join；热路径预算可度量。
-  \item \textbf{治理前提}——Tier-R2 审批链、法务与数据主体权利流程可用；发布委员会对 acceptance contract 与证据包负责。
-  \item \textbf{依赖前提}——检索、工具与外部依赖的可用性与降级语义已声明；依赖降级时触发 T2 并按契约降级。
-\end{itemize}
+上述 bounded guarantees 的成立依赖四类前提：
+\begin{enumerate}
+  \item \textbf{理论/语义前提：}风险分类、事件类型与 policy schema 在当前版本内可判定，不可判定部分已通过 acceptance contract 被列为残余风险；
+  \item \textbf{部署/观测前提：}关键遥测可用，日志不可篡改，三平面最小字段可落盘且可 join，热路径预算可被度量；
+  \item \textbf{治理前提：}Tier-R2 审批链、法务/数据治理流程与发布委员会机制真实存在，并对 contract 与 evidence pack 负责；
+  \item \textbf{依赖前提：}检索、工具与外部依赖的可用性和降级语义已声明，依赖降级可触发 T2 并按 contract 收缩能力包。
+\end{enumerate}
+\noindent 若这些前提未被满足，则保证强度必须同步收缩，且不得继续沿用原 Track A 或原 release statement。
 
 \subsection{Degradation regimes（退化态与最低服务形态）}
-\textbf{主线：}综合。前提失效时系统须退入已声明的最低形态：收缩能力包、禁用高副作用工具、切换只读或 D1/D4 等保守路径；并将对外主张同步收缩（不得继续使用原 Track A 结论）。退化的实现语义以第4章 Fail-Safe（T/D/S1/Tier-R）为准，证据义务以第5章放行证据包为准。
+当前提失效、观测不足、依赖退化或证据链断裂时，系统必须退入已声明的最低服务形态。最小退化原则是：
+\begin{enumerate}
+  \item \textbf{先收缩能力包，}例如禁用高副作用工具、收窄检索域、切换只读或限权模式；
+  \item \textbf{再选择受控动作空间，}即在 D1--D4 中保守退化，而不允许运行时隐式创造新动作类型；
+  \item \textbf{必要时转入 Tier-R1/Tier-R2，}并把恢复过程写入 evidence；
+  \item \textbf{同步收缩对外主张，}即不再沿用失效前的 Track A 结论或 release 语义。
+\end{enumerate}
+\noindent 退化不是失败的附属说明，而是 bounded guarantee 本身的一部分：一个不能说明“失效时如何收缩”的系统，不构成可部署保证对象。
 
 \subsection{部署分层（Deployment regime layering：white-box / semi-white-box / black-box）}
-\textbf{分层原则：}观测与强制能力越弱，可主张的保证越弱；不得将不同分层混称为同一「安全等级」。
+观测与强制能力越弱，可主张的保证越弱；不同分层下的保证不得被混称为同一“安全等级”。
 \begin{itemize}
-  \item \textbf{White-box}——可完整落盘三平面字段与决策证据；可差分重跑与机制回放；允许更细粒度 acceptance contract 与更强 release defense。
-  \item \textbf{Semi-white-box}——部分字段可用、部分只能抽样；可主张 S1 与核心 Fail-Safe 纪律，但对回放与最坏情形主张必须收缩并显式披露抽样误差。
-  \item \textbf{Black-box}——仅有粗粒度日志或外部接口观测；不得主张可回放机制；高风险工具与检索能力包须默认收缩，Track A 结论只可在更强前提下陈述。
+  \item \textbf{White-box：}可完整落盘三平面字段与 decision/evidence 记录，可进行差分重跑与机制回放，因此允许更细粒度的 acceptance contract 与更强的 release defense。
+  \item \textbf{Semi-white-box：}部分字段可用、部分依赖抽样或近似，因此可主张核心 Fail-Safe、S1 与部分 evidence join，但必须显式披露抽样误差与回放边界。
+  \item \textbf{Black-box：}仅有粗粒度接口观测时，不得主张机制级可回放或强 release defense，只能主张更弱的 bounded guarantees，例如能力包收缩、错误码与人工恢复边界。
 \end{itemize}
+\noindent 分层的作用不是给系统贴标签，而是为允许陈述的 guarantee 设定类型环境。
 
 \subsection{类型检查：在分层条件下的可主张上限}
-\textbf{主线：}综合。\textbf{类型检查（许可/禁止）：}
+部署分层相当于 guarantee grammar 的类型环境，不同环境允许的陈述上限如下：
 \begin{itemize}
-  \item \textbf{White-box：}允许陈述机制级可回放与差分重跑性质。
-  \item \textbf{Semi-white-box：}仅允许在抽样误差披露下陈述局部机制保证。
-  \item \textbf{Black-box：}禁止陈述“可回放/可证明机制”；仅允许更弱的 bounded guarantees（能力包收缩、S1、可解释错误码、Tier-R2 authority boundary）。
+  \item \textbf{White-box 环境}允许陈述：机制级回放、差分重跑、join 拓扑完整性、细粒度 release defense；
+  \item \textbf{Semi-white-box 环境}允许陈述：局部机制保证、抽样条件下的 evidence 支撑、收缩后的 contract；
+  \item \textbf{Black-box 环境}禁止陈述：机制级可回放、全流程可证明、强 release defense；仅允许陈述能力包边界、S1、错误码与人工恢复等更弱对象。
 \end{itemize}
-\noindent 任何超出类型环境的陈述必须被拒绝进入 release defense。
+\noindent 任何超出当前类型环境的陈述，均不得进入 release defense 或对外材料。
 
 \subsection{可陈述保证的句式模板（最小集合）}
-\textbf{主线：}综合。以下句式可作为对外陈述的最小模板（每条均须指向证据包引用链）：(i) \textbf{范围句：}在\{场景/租户/法域/语言\}与\{能力包\}边界内，系统以 \texttt{policy\_version}=$v$ 提供\{可验收保证\}。(ii) \textbf{不变量句：}对声明为同步的接口，系统满足 S1，并在 T1--T3 成立时仅在 D1--D4 空间内退化。(iii) \textbf{证据句：}上述保证由 Release Evidence Pack 的\{条目编号/制品哈希/回放样本\}支撑，可由 \texttt{correlation\_id}/\texttt{decision\_record\_id} 复原。(iv) \textbf{退化句：}当前提\{列举\}不满足时，系统收缩为\{最低形态\}并同步收缩对外主张。
-\par\noindent 上述模板构成最小陈述集合；若超出该集合，必须首先回到 6.1.1--6.1.2 检查其是否可被 contract 与 evidence 编译。
+为避免对外陈述再次滑入泛化叙述，本书只允许以下最小句式模板进入 release 材料：
+\begin{enumerate}
+  \item \textbf{范围句：}在 \{租户/法域/语言/工作流/能力包\} 范围内，系统以 \{\texttt{policy\_version}\} 提供 \{有界保证\}；
+  \item \textbf{不变量句：}对声明为同步的接口，系统满足 \{S1\}，并在 \{T1--T3\} 成立时仅在 \{D1--D4\} 空间内退化；
+  \item \textbf{证据句：}上述保证由 \{Release Evidence Pack 条目 / \texttt{correlation\_id} / \texttt{decision\_record\_id} / \texttt{approval\_ref}\} 支撑，可被回放与引用；
+  \item \textbf{退化句：}当前提 \{列举\} 不满足时，系统将退入 \{最低服务形态\} 并同步收缩对外主张。
+\end{enumerate}
+\noindent 上述模板构成最小允许集合。任何超出这些模板的更强说法，都必须先通过保证语法与编译检查；否则不应进入 release decision、合同文本或公开摘要。
 
 
 \section{Bounded deployment contract（有界部署合同）}
