@@ -81,6 +81,17 @@
 
 \textbf{（三）为什么只有 control plane 能统一 judgment / execution / evidence / release。}四元必须共享：\textbf{同一策略版本}约束在线求值与离线聚合；\textbf{同一证据 schema} 贯穿运行时日志、影子对比与签批附件；\textbf{同一 release 对象}（策略包 + 模型路由 + 检测器/规则包 + 必要遥测切片）支持\emph{差分重跑}与责任切片。只有控制面提供这一\emph{版本面与编目}；模型平台与功能集合均不具备把四元压成单一可辩护对象的构造能力。
 
+\noindent 下图收束前文的否定性论证：控制面的必要性并不来自“功能更多”，而来自它是唯一能把义务、判断、执行、证据与放行压入同一责任边界的总对象。
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{figures/Fig1.png}{\includegraphics[width=0.9\textwidth]{figures/Fig1.png}}{%
+    \fbox{\parbox{0.9\textwidth}{\vspace{22mm}\centering\textbf{图1占位：figures/Fig1.png}\par\vspace{22mm}}}%
+  }
+  \caption{Unified AI Security Control Plane 的责任边界拓扑}
+  \label{fig:responsibility-topology}
+\end{figure}
+\noindent 本图不是模块枚举，而是企业级 AI 安全义务的责任边界拓扑：Evaluation 与 Benchmark Governance 负责义务定义与风险测量，Security Control Plane 负责 judgment、routing、scoring 与策略求值，xCloud / Execution Environment 负责执行承接与编排，Evidence \& Release Gating 负责将判断转化为可放行、可审计对象，而 Chinese \& Multilingual Safety Intelligence 则为控制平面提供不可被全球平均化的 geo-specific semantics。图中关键不是功能归类，而是 judgment、execution、evidence 与 release 在统一版本面下的闭合关系。
+
 \section{阅读约定与主张口径（摘要）}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺的是\emph{可部署、可测量、可撤回}的企业安全契约：在明示前提（见第6章）下，通过 \DecoupledSafety{} 与 \EvalFramework{} 提供有界保证。\textbf{非目标}包括：不对任意开放自然语言任务给出全局安全证明；不将单次离线红队分数等同于生产放行；不将不同评测轨（尤其「可部署结论轨」与「机制上界压力轨」）混读为单一总分。完整非目标、前提与退化态见第6章。
 
@@ -376,6 +387,16 @@
 
 \paragraph{必须异步完成的昂贵适应。}包括但不限于：大规模语料/索引刷新、跨租户聚合调参、完整红队战役回放、策略 DSL 的结构化改写、引入新检测器家族、改变 Track A 放行契约语义。此类动作只能在 ORA 冷路径完成，并在证据面产生「候选—评测—签批—生效」链，防止线上隐性分叉。
 
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{figures/Fig4.png}{\includegraphics[width=0.92\textwidth]{figures/Fig4.png}}{%
+    \fbox{\parbox{0.92\textwidth}{\vspace{22mm}\centering\textbf{图2占位：figures/Fig4.png}\par\vspace{22mm}}}%
+  }
+  \caption{双时间尺度的风险自适应安全闭环}
+  \label{fig:dual-timescale-loop}
+\end{figure}
+\noindent 本图展示的不是线性工作流，而是一个双时间尺度的风险自适应控制系统：热路径在实例级完成 runtime enforcement，冷路径则将 benchmark、risk profile、release gating 与 regression 组织为持续更新的策略与证据回路。Evaluation 在此并非单独评分器，而是决策信号编译器；Evidence 与 Release Gating 也不是末端归档，而是把判断与执行提升为可放行、可审计、可回归的保证对象。
+
 \evaluationnote{运行时保证目标}{热路径：残余风险、效用影响、p95/p99、S1 违约率；Fail-Safe：T*$\rightarrow$D* 迁移频率与错误码分布；ORA 冷路径：候选到上线的周期与回滚次数。与第5章最小证据包字段交叉校验。}
 
 \keytakeaway{第4章把运行时写清三件事：热路径上的 T/D/S 纪律、冷路径上的 Tier-R2 与 ORA 适应、以及全程可 join 的证据——使强制协议与第3章三平面及第5章放行共用同一对象语言。}
@@ -427,6 +448,16 @@
 \end{itemize}
 
 \section{多轨评测进入统一治理决策：统一决策不等于统一分数}
+\noindent 多轨评测的关键不在于“跑两套测试”，而在于：在共享执行骨架上保留语义分叉，并在统一治理决策板上完成 bounded contract 所要求的汇合。
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{figures/Fig2.png}{\includegraphics[width=0.92\textwidth]{figures/Fig2.png}}{%
+    \fbox{\parbox{0.92\textwidth}{\vspace{22mm}\centering\textbf{图3占位：figures/Fig2.png}\par\vspace{22mm}}}%
+  }
+  \caption{多轨评测的语义分叉与统一治理汇合}
+  \label{fig:semantic-bifurcation}
+\end{figure}
+\noindent 本图说明，企业级 AI 安全的评测并非单一评分问题，而是在共享执行骨架上的多语义轨道治理问题：轨道可共享 run manager、execution engine、result store 与 \textsc{ci}/\textsc{cd} 接口，但在套件、聚合逻辑与输出语义上保持独立；它们最终并非汇总为单一总分，而是进入统一治理决策板，形成 risk profile、release recommendation 与 audit report。
 \textbf{主线：}\EvalFramework{}。不同监管或组织义务不必坍缩为单一分数。可行模式是：\emph{共享执行主干}（运行定义、目标、制品、结果存储、\textsc{ci}/\textsc{cd} 挂钩）配以在套件、聚合逻辑与报告模板上各异的\emph{多条评测轨}，并在放行时汇入\emph{统一治理决策板}。\textbf{关键澄清：}统一治理决策统一的是「放行/限权放行/灰度/回滚」与其证据引用，而不是把多轨结果压成一个 score；任何压缩必须显式披露权重与损失，并在第6章 claim discipline 中标注为新的主张前提。
 
 \subsection{Track A / Track B 的 claim discipline（禁止混读）}
