@@ -20,7 +20,7 @@
 \bluebooktitle{企业级人工智能安全技术蓝皮书}
 \bluebooksubtitle{统一 AI 安全控制面、解耦安全与评测框架}
 \bluebookauthor{王云浩 等}
-\bluebookorg{数字信任 / 天木 / AI 安全研究}
+\bluebookorg{数字信任 / 天幕 / AI 安全研究}
 \bluebookversion{v1.0-草案}
 \bluebookdate{\today}
 \bluebookclassification{内部草案}
@@ -31,17 +31,31 @@
 \makebluebookfrontmatter
 
 \begin{bluebookabstract}
-本蓝皮书的科学对象不是「AI 安全平台」或「控制面架构说明书」，而是一个\textbf{保证生产系统（guarantee production system）/义务闭合机器（obligation closure machine）}：它把义务语义（含 geo-specific semantics）、运行时控制、证据记录与放行治理闭合为\emph{同一版本化对象}，从而持续产出企业可签署、可审计、可回放、可收缩的\emph{bounded guarantees}。本书采用\emph{一主两翼}结构来实现该生产函数：\textbf{主}为 \ControlPlane{}——在统一边界内承载 judgment、execution、evidence、release 的四元闭合；\textbf{翼A}为 \DecoupledSafety{}——策略优先于模型偏好，以可组合接口将义务外置并可测；\textbf{翼B}为 \EvalFramework{}——以基准宪章、验收契约、多轨纪律与证据包，把测量、回归与发布闸绑为同一条证据链。本书给出的是\emph{有界、可部署}主张：明示前提、非目标与退化态，而非自然语言意义上的全局安全证明。
-\end{bluebookabstract}
-
-\executivesummary{
-本蓝皮书讨论的对象，不是一个由若干 detector、评测组件与治理流程拼接而成的 AI 安全平台，也不是一份控制面架构说明书，而是一套面向企业级 AI 部署的 \textbf{保证生产系统（guarantee production system）/义务闭合机器（obligation closure machine）}。它的核心任务，是在统一版本面下，把义务语义、运行时判断、强制动作、证据记录与放行陈述闭合为同一可管理对象，从而持续产出 \textbf{可部署、可审计、可回放、可收缩的 bounded guarantees}。在这一意义上，控制面不是功能集合，而是企业安全义务得以被生产、维护与辩护的系统边界。
+本蓝皮书讨论的对象，不是一个由 detector、评测组件与治理流程拼接而成的 AI 安全平台，也不是一份控制面架构说明书，而是一套面向企业级 AI 部署的 \textbf{保证生产系统（guarantee production system）/义务闭合机器（obligation closure machine）}：它在统一版本面下，把义务语义、运行时判断、强制动作、证据记录与放行陈述闭合为同一可管理对象，从而持续产出 \textbf{可部署、可审计、可回放、可收缩的 bounded guarantees}。在这一意义上，控制面不是功能集合，而是企业安全义务得以被生产、维护与辩护的系统边界。
 
 为实现这一对象，本书采用“一主两翼”的结构。\textbf{主}为 \textbf{Unified AI Security Control Plane}，负责在统一边界内闭合 judgment、execution、evidence 与 release 四个基本对象；\textbf{翼 A} 为 \textbf{Decoupled Safety}，其作用不是增加一层安全外挂，而是把开放语义空间中不可被完全全局审查的问题，改写为事件可判定、策略可求值、失败可退化、证据可记录的实例级契约；\textbf{翼 B} 为 \textbf{Evaluation Framework}，其职责也不只是评分，而是把 benchmark constitution、acceptance contract、多轨评测纪律与机制证据包、放行证据包组织成同一证据链，使测量、回归与发布治理进入统一决策。三者的共同目标，不是构建“更大的安全平台”，而是使企业能够在明示前提下，对自身 AI 系统给出合法、可验证、可撤回的安全主张。
 
-这一对象之所以必要，是因为企业级 AI 已不再表现为单模型补全问题，而是一个由网关、检索、工具、工作流、记忆、编排与审计共同构成的复合系统。风险也因此不再局限于“有害输出”，而扩展为机密性、完整性、可用性、可控性、可审计性、可组合性与效用保持之间的系统性张力。若仍将安全寄托于更强模型、更高离线分数、或若干松耦合护栏的叠加，则义务会在 judgment、execution、evidence 与 release 之间断裂：线上生效的策略与放行材料不一致，审计无法复原当时依据的策略与检索/工具事件，回归与生产不共享同一事件与证据对象。由此，本书的中心判断是：企业级 AI 安全的根本问题不是“模型是否更对齐”，而是企业是否拥有一套可以持续闭合义务、维护证据并支撑发布答辩的控制系统。
+本书的核心判断是：企业级 AI 安全的根本问题不是“模型是否更对齐”，而是企业是否拥有一套能够持续闭合 judgment、execution、evidence 与 release 的控制系统。随着企业 AI 从单模型端点演化为包含网关、检索、工具、工作流、记忆与多轮状态的复合系统，风险已扩展为机密性、完整性、可用性、可控性、可审计性、可组合性与效用保持之间的系统性张力。若仍将安全寄托于更强模型、局部护栏或离线分数，义务就会在策略、线上行为、证据链与放行材料之间断裂。控制面的意义，正是在于把这些张力从“各团队局部优化”转化为可版本化 policy、可执行强制、可 join evidence 与可发布 bounded contract。
 
-本书给出的是有界、部署导向的主张，而不是对开放自然语言交互的全局安全证明。我们显式声明：任何安全主张只有在其 scope、前提条件、退化语义、部署分层与证据基础均被写清，并能被编译到 acceptance contract 与 release evidence pack 时，才构成合法的企业级保证陈述。相应地，本书也将多轨评测写成 \textbf{语义分叉与治理汇合} 的证据体系：不同法域、语言与义务空间不被压缩为单一总分，而是在共享执行骨架上保持独立语义，并在统一治理决策板上汇合为 risk profile、release recommendation 与 audit artifact。最终，本蓝皮书的交付物不是一组能力清单，而是一套可运行的 enterprise operating model：它把 theory、system、benchmark 与 release 压成同一制品链路，并使每一次发布都成为一份可辩护、可回放、可回滚的 bounded contract。
+本蓝皮书给出的是\textbf{有界、部署导向的主张}，而不是对开放自然语言交互的全局安全证明。任何安全主张只有在其 scope、preconditions、degradation semantics、deployment regime 与 evidence basis 被明示，并能被编译到 acceptance contract 与 release evidence pack 时，才构成合法的企业级 guarantee statement。相应地，本书将 evaluation 写成 \textbf{语义分叉与治理汇合} 的证据引擎：不同法域、语言与义务空间不被压缩为单一总分，而是在共享执行骨架上保持独立语义，并在统一治理决策板上汇合为 risk profile、release recommendation 与 audit artifact。最终，本书提出的不是一组能力清单，而是一套可运行的 enterprise operating model：它把 theory、system、benchmark 与 release 压成同一制品链路，并使每一次发布都成为一份可辩护、可回放、可回滚的 bounded contract。
+\end{bluebookabstract}
+
+\executivesummary{
+企业级 AI 安全的核心，不再是“如何为模型增加更多安全能力”，而是“如何持续生产、维护并辩护可签署的安全保证”。本蓝皮书因此提出的总对象，不是一个 AI 安全平台，也不是一套控制面模块，而是一台 \textbf{保证生产系统}：它要求企业在统一版本面下，将义务语义、运行时判断、强制动作、证据记录与 release 决策闭合为同一对象，使安全主张能够被生产、验证、收缩、回放并进入发布治理。Unified AI Security Control Plane 是这一对象在系统层的边界形式，而不是对它的全部解释。
+
+这一总对象以“一主两翼”的方式被组织起来。主轴是 \textbf{Unified AI Security Control Plane}，其任务是在统一边界内闭合 judgment、execution、evidence 与 release 四个核心对象；第一翼是 \textbf{Decoupled Safety}，它将安全从模型内部难以稳定引用的隐式属性，改写为 policy、event、decision、evidence 与 Fail-Safe 对象上的实例级契约；第二翼是 \textbf{Evaluation Framework}，它把 benchmark constitution、acceptance contract、多轨评测纪律与两类 evidence pack 组织为同一证据引擎，使系统的测量、回归与放行答辩进入统一治理语法。由此，AI 安全不再被理解为“局部防御能力的叠加”，而被理解为一种能够持续产出 bounded guarantees 的企业系统。
+
+本书之所以必须采用这一视角，是因为企业级 AI 部署已不再是单模型补全问题，而是一个由网关、检索、工具、工作流、记忆、多轮状态与审计流程共同构成的复合系统。风险也因此不再局限于有害输出，而扩展为机密性、完整性、可用性、可控性、可审计性、可组合性与效用保持之间的系统性张力。若仍将安全寄托于更大的模型、更多的离线对齐，或若干松耦合护栏的局部最优，组织将无法在 policy、线上行为、证据链与放行材料之间维持一致性。安全义务最终会断裂为孤立分数、孤立日志与孤立拦截，而无法成为可签署、可治理的 release object。
+
+在系统原理上，本书提出的不是“再增加一层安全外挂”，而是一条必要路径：面对开放语义空间中无法被完全在线全局审查的问题，系统必须退到一个 \textbf{可计算外壳（computable envelope）} 上。Decoupled Safety 的意义，正在于把开放任务空间压缩为有限的 event、有限的 decision 语义、有限的 Fail-Safe 动作空间与有限的 evidence 字段，使热路径内的决策可以被确定性求值、被写入证据、并在冲突时进入协议化收缩。由此，运行时不再依赖模型在压力情境下的自我反思，而是由 policy、kernel、FailSafeObject 与 evidence graph 共同承担可执行的安全义务。
+
+在方法论上，本书将企业级 AI 安全建模为一个 \textbf{双时间尺度的风险自适应控制系统}。快时间尺度位于在线热路径：系统在单请求、单会话预算内完成 event 求值、动作派发、Fail-Safe 收敛与证据追加；慢时间尺度位于离线冷路径：系统通过 benchmark、risk profile、multi-track evaluation、release gating 与 regression 持续更新 policy\_version、检测器包、能力包与放行边界。Evaluation 在此不是评分器，而是 \textbf{decision-signal compiler}；Evidence 与 Release Gating 也不是末端归档，而是把判断与执行提升为可放行、可审计、可回归的保证对象。
+
+在评测与治理层，本书拒绝把不同风险语义压缩为单一总分，而采用 \textbf{semantic bifurcation with governance convergence} 的结构。全球安全稳健性、法域合规性、语言特定风险与组织义务在共享执行骨架上并行存在，各自保留 suite、aggregation logic 与 report semantics；它们最终汇入统一治理决策板，输出的是放行、限权放行、灰度或回滚等 release decision，而不是被隐式压缩为一个分数。因此，Track A 与 Track B 的纪律是本书的硬约束：Track A 承载可部署结论，Track B 承载机制上界与压力验证，二者不得被混读或混算。所有对外与对内可陈述保证，都必须由 Mechanism Evidence Pack 与 Release Evidence Pack 支撑。
+
+本书同时明确给出一套 \textbf{claim discipline / guarantee grammar}。任何允许进入 release defense、对外材料或合同文本的安全主张，必须同时声明其 scope、invariants、degradation semantics、preconditions、evidence basis 与 deployment regime；任何无法被 acceptance contract 与 evidence pack 编译的陈述，都不被视为合法 guarantee statement。由此，本书提供的不是全局自然语言安全证明，而是一套 bounded deployment contract：在明示前提成立时，系统可以主张哪些有界保证；当前提破坏时，系统又必须退入何种最低服务形态，并同步收缩对外主张。
+
+最后，本蓝皮书并不把 unified R\&D framework 理解为组织汇报结构，而把它理解为一个 operating program。通过 \textbf{theory → system → benchmark → release} 的统一制品链路，以及 \textbf{One DTL Security Program} 的单一真源对象、单一放行门与单一演化节律，企业可以把语义与义务生成、运行时控制实现、测量与证据编译、以及放行与监督闭环，组织为同一条保证生产线。真正的护城河，不在于拥有更多模块，而在于拥有一套能够持续把风险语义编译为 control、把 control 沉淀为 evidence、再把 evidence 编译为 bounded guarantees 的企业系统。
 }
 
 % =============================
@@ -669,47 +683,54 @@
 % 第8章
 % =============================
 \chapterstarter{统一研发框架：theory--system--benchmark--release operating program}{
-本章把「统一研发框架」从 org chart/路线图升级为可运行的 operating program：用 theory 定义可主张性质与边界；用 system 把性质压到 \SafetyKernel{} 与 T/D/S/Tier/ORA 的可验收接口；用 benchmark 把性质变成测量义务、证据包与多轨套件；用 release 把证据变成 bounded deployment contract 与可对外陈述。核心机制是 One DTL Security Program：以统一对象语言与统一制品链路避免割裂团队并行推进。
+\textbf{Chapter Objective} 本章的任务，不是再介绍组织结构，而是把全书收口为一个可运行的 operating program。前文已经依次定义了总对象（\ControlPlane{}）、系统原理（\DecoupledSafety{}）、证据引擎（\EvalFramework{}）、bounded deployment contract 与 geo-specific semantics；本章要回答的是：这些对象如何不再停留于章节结构，而被压成同一条可持续运行的企业生产线。也就是说，本章讨论的不是“谁负责哪个模块”，而是\textbf{理论如何变成可主张性质，性质如何变成系统对象，系统对象如何变成 benchmark 与 evidence，evidence 又如何变成 release decision 与 bounded contract}。One DTL Security Program 的意义，正是在于用统一对象语言、统一证据门与统一节律，把这条链路从概念蓝图变成组织可运行事实。
 }{
+\textbf{Deliverables}
 \begin{itemize}
-  \item theory$\rightarrow$system$\rightarrow$benchmark$\rightarrow$release：闭环而非并行列表。
-  \item One DTL Security Program：单一真源对象、单一门（Track A 证据包）、单一节律。
-  \item 四个一级单元 + 三条长期研究主线：用 artifact 协同，而不是用会议对齐。
+  \item 以 theory$\rightarrow$system$\rightarrow$benchmark$\rightarrow$release 的单链路，收口全书对象，而不是再列并行条目。
+  \item 明确 One DTL Security Program 的最小运行约束：单一真源对象、单一放行门、单一演化节律。
+  \item 将统一研发框架表达为保证生产的因式分解：语义与义务生成、运行时控制实现、测量与证据编译、放行与监督闭环。
 \end{itemize}
 }
 
 \section{theory--system--benchmark--release：把主张变成可运行流水线}
-\textbf{主线：}综合。\textbf{theory} 产出 claim discipline 与 geo-specific semantics；\textbf{system} 把其落到 \texttt{event}\,$\rightarrow$\,\texttt{decision}\,$\rightarrow$\,\texttt{evidence} 与 T1--T3/D1--D4/S1/Tier-R/ORA；\textbf{benchmark} 把其变成 benchmark constitution、acceptance contract 与两类证据包；\textbf{release} 将证据输入统一治理决策板并输出 bounded deployment contract（放行/限权/回滚）。该链路的关键约束是：所有结论必须可引用 \texttt{policy\_version} 与可 join 的证据键（\texttt{correlation\_id} / \texttt{decision\_record\_id}）。
+本书中的统一研发框架，不是“研究、工程、评测、发布”四项工作的并列排布，而是一条单向可追溯、双向可回流的生产链。\textbf{theory} 负责给出 claim discipline、guarantee grammar、geo-specific semantics 与可主张边界；\textbf{system} 负责把这些边界压到 \texttt{event}、\texttt{decision}、\texttt{evidence} 与 T/D/S/Tier-R/ORA 等可验收对象；\textbf{benchmark} 负责把这些对象转译为 benchmark constitution、acceptance contract、多轨套件与两类 evidence pack；\textbf{release} 则负责把证据输入统一治理决策板，并输出放行、限权放行、灰度、回滚等 bounded deployment contract。
 
-\section{One DTL Security Program（建议写法）}
-\textbf{主线：}综合。One DTL Security Program 是把 theory--system--benchmark--release 压成同一条企业流水线：以统一对象语言约束各单元产出，以统一证据包约束 Track A 放行，以统一节律把事故与回归纳入演化。其对外结果不是「我们做了很多事」，而是「在明示前提下，我们可交付哪些 bounded guarantees，并附带可审计证据包」。
+这条链路的关键约束是：\textbf{任何可对外陈述的结论，都必须能够同时回指到 theory 中定义的主张边界、system 中实现的对象、benchmark 中产生的证据，以及 release 中被引用的 contract 条款。}一旦这条链路中断，系统仍然可以“做很多安全能力”，但不能持续生产可辩护 guarantee。由此，本章并不把研发框架理解为资源编排，而是把它理解为 guarantee production system 的组织形式。
 
-\section{四个一级单元：职责与核心 artifact}
-\textbf{主线：}综合。
+\section{One DTL Security Program}
+One DTL Security Program 的本质，不是一个项目集合，也不是一张汇报关系图，而是一条把 theory、system、benchmark 与 release 压成同一运行语法的企业生产线。它要求：不同单元不能各自定义自己的对象语言、自己的证据门、自己的发布口径；相反，所有单元都必须围绕同一组可版本、可 join、可回放的对象工作，例如 \texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}、track discipline、acceptance contract 与 release evidence pack。
+
+因此，One DTL Security Program 对外呈现的结果，不应是“团队完成了多少模块”，而应是“在明示前提下，系统能够交付哪些 bounded guarantees，并且这些保证如何被 evidence pack 与 contract 支撑”。这也是为什么本书最终需要统一的 program，而不能接受 evaluation、runtime、China intelligence 与 release 各自独立演化：一旦对象语言不统一，证据链与 release defense 就会断裂。
+
+\section{四个一级因子：职责与核心 artifact}
+从保证生产的角度看，统一研发框架可以被压缩为四个不可约因子，而不是四个并行团队。
 \begin{itemize}
-  \item \textbf{因子F1：Theory \& Semantics（语义与义务生成）。}职责：风险分类、义务语义、Non-goals/Preconditions/Degradation regimes、geo-specific semantics 与理由码体系。核心 artifact：taxonomy、obligation mapping、guarantee grammar/claim 模板、\texttt{rationale\_code} 字典。
-  \item \textbf{因子F2：System \& Kernel（运行时控制实现）。}职责：\SafetyKernel{} 最小接口、事件类型、强制挂点、T/D/S/Tier/ORA 的实现与回放 harness。核心 artifact：kernel API、策略 DSL、执行挂点规范、回放与差分重跑工具链。
-  \item \textbf{因子F3：Benchmark \& Evidence（测量与证据编译）。}职责：benchmark constitution、acceptance contract、多轨套件、机制证据包与放行证据包的生成与校验。核心 artifact：RQ-first 映射表、套件版本、Mechanism/Release Evidence Pack 模板与流水线。
-  \item \textbf{因子F4：Release \& Operations（放行与监督闭环）。}职责：统一治理决策板、差分重跑策略、例外到期机制、SRE/IR 闭环与审计抽样。核心 artifact：release checklist、决策板记录、回滚预案、审计与抽样计划、Tier-R2 authority boundary 配置。
+  \item \textbf{因子 F1：Theory \& Semantics（语义与义务生成）。}职责是定义可主张的边界：风险分类、义务语义、Non-goals、Preconditions、Degradation regimes、geo-specific semantics 与 \texttt{rationale\_code} 体系。其核心 artifact 不是“研究结论”，而是 taxonomy、obligation mapping、guarantee grammar 与可引用的 claim 模板。
+  \item \textbf{因子 F2：System \& Kernel（运行时控制实现）。}职责是把理论对象压到系统对象：\SafetyKernel{} 最小接口、事件类型、强制挂点、T/D/S/Tier-R/ORA 的实现与回放 harness。其核心 artifact 是 kernel API、策略 DSL、执行挂点规范、回放工具与差分重跑链路。
+  \item \textbf{因子 F3：Benchmark \& Evidence（测量与证据编译）。}职责是把可主张边界与系统对象编译成 benchmark constitution、acceptance contract、多轨套件、Mechanism Evidence Pack 与 Release Evidence Pack。其核心 artifact 不是“评测报告”，而是 RQ-first 映射表、套件版本、轨道纪律与 evidence pack 模板。
+  \item \textbf{因子 F4：Release \& Operations（放行与监督闭环）。}职责是把证据变成治理行为：统一治理决策板、差分重跑策略、例外到期机制、\textsc{sre}/\textsc{ir} 闭环与审计抽样。其核心 artifact 是 release checklist、决策记录、回滚预案、审计计划与 Tier-R2 authority boundary 配置。
 \end{itemize}
+这四个因子共同构成的不是“组织图”，而是企业 AI 安全保证生产的因式分解：它们分别生成语义、实现控制、编译证据、执行放行，但必须共享同一对象语言与同一 release gate。
 
 \section{三条长期研究主线：以“可升级的保证边界”组织研究}
-\textbf{主线：}综合。
+如果前述四个因子是生产结构，那么长期研究主线就是这套生产结构的升级方向。本书建议将长期研究组织为三条围绕“可升级 guarantee 边界”的主线，而不是围绕孤立技术主题。
 \begin{itemize}
-  \item \textbf{主线1：可主张保证的扩大。}把 black-box$\rightarrow$semi-white-box$\rightarrow$white-box 的可观测性升级为更强 bounded guarantees（更多可回放、更少抽样误差）。
-  \item \textbf{主线2：非确定与多目标权衡的证据化。}将置信区间、最坏情形与成本—时延—安全—效用联合目标纳入可审计证据包，而非事后解释。
-  \item \textbf{主线3：对抗演化与受控适应。}以 ORA 冷路径证明边际增益与回滚纪律，避免线上隐性策略漂移，并与 Track A 放行语义保持一致。
+  \item \textbf{主线一：可主张保证的扩大。}目标是把 black-box / semi-white-box / white-box 不同 deployment regime 下可陈述的 bounded guarantees 逐步扩大：更多对象可回放、更多决策可被证据化、更多 release statement 可以被精确 contract 化。
+  \item \textbf{主线二：非确定与多目标权衡的证据化。}目标是把安全、效用、时延、成本与审计性之间的张力从经验折中，提升为可被 evidence pack、置信区间与最坏情形口径共同描述的治理对象。换言之，不是只优化系统，而是优化“哪些 trade-off 可被合法主张”。
+  \item \textbf{主线三：对抗演化与受控适应。}目标是通过 ORA 冷路径、版本单调更新、差分重跑与回滚纪律，证明系统可以在不破坏 release defense 的前提下持续吸收攻击演化，而不是在线产生隐性策略漂移。
 \end{itemize}
+这三条主线的共同特征在于：它们都不只是追求更强技术能力，而是追求更强的 bounded guarantees 生产能力。
 
 \section{如何协同运行：避免割裂团队并行推进}
-\textbf{主线：}综合。程序化协同依赖三条硬约束：
+统一 operating program 能否成立，取决于是否遵守三条硬约束。
 \begin{itemize}
-  \item \textbf{单一真源对象。}统一的事件/证据 schema 与版本语义（\texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}）；禁止各单元自造口径导致无法 join。
-  \item \textbf{单一门。}Track A 放行必须携带第5章 Minimum Release Evidence Pack；Track B 结果不得外推；例外必须签批并设到期。
-  \item \textbf{单一节律。}事故$\rightarrow$用例入库$\rightarrow$回归闸$\rightarrow$版本单调发布；每次发布执行差分重跑与证据包审阅，使理论、系统、基准与发布共同演化。
+  \item \textbf{第一，单一真源对象。}系统必须使用统一的事件、证据与版本语义，例如 \texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}、track 标识与 contract 条款。任何单元若引入无法被其他单元 join 的对象语言，都会直接破坏 guarantee production 的闭合。
+  \item \textbf{第二，单一放行门。}所有可部署结论都必须通过同一 release gate：Track A 结果必须携带 Release Evidence Pack；Track B 结果不得越权进入 release 摘要；例外必须经过签批并设置到期。没有统一门，组织只能生产局部分数，不能生产 release defense。
+  \item \textbf{第三，单一演化节律。}事故、用例入库、回归闸、版本单调发布必须形成固定节律，使 theory、system、benchmark 与 release 共同演化。换言之，研发不是“不断加功能”，而是不断把失败模式重新编译进 guarantee grammar、evidence pack 与 bounded contract。
 \end{itemize}
 
-\keytakeaway{第8章把统一研发写成 operating program：以 theory--system--benchmark--release 的统一制品链路与 One DTL Security Program 的硬约束收口组织协同，避免割裂团队并行推进，并把每次发布变成可辩护、可回放、可撤回的 bounded contract 升级。}
+\keytakeaway{统一研发框架在本书中不是组织设计说明，而是 guarantee production system 的 operating program。它用 theory--system--benchmark--release 的单链路，把可主张边界、系统对象、多轨证据与放行治理压成同一条生产线；用 One DTL Security Program 确保对象语言、证据门与发布节律不再分裂。由此，系统每一次发布都不只是一次部署行为，而是一次 bounded contract 的生产、验证与升级。}
 
 % =============================
 % 附录
