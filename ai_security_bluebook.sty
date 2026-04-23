@@ -1,0 +1,356 @@
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ai_security_bluebook}[2026/04/23 v1.0 AI Security Bluebook Style]
+
+% =============================
+% Engine / basic packages
+% =============================
+\RequirePackage{iftex}
+\RequirePackage{xcolor}
+\RequirePackage{geometry}
+\RequirePackage{setspace}
+\RequirePackage{titlesec}
+\RequirePackage{titling}
+\RequirePackage{fancyhdr}
+\RequirePackage{graphicx}
+\RequirePackage{booktabs}
+\RequirePackage{longtable}
+\RequirePackage{array}
+\RequirePackage{tabularx}
+\RequirePackage{enumitem}
+\RequirePackage{hyperref}
+\RequirePackage{bookmark}
+\RequirePackage{amsmath,amssymb,amsthm,mathtools}
+\RequirePackage{tcolorbox}
+\RequirePackage{etoolbox}
+\RequirePackage{caption}
+\RequirePackage{tocloft}
+\RequirePackage{titlesec}
+\RequirePackage{needspace}
+\RequirePackage{multicol}
+\RequirePackage{pgffor}
+\RequirePackage{kvoptions}
+
+\ifPDFTeX
+  \PackageWarning{ai_security_bluebook}{PDFLaTeX detected. For bilingual Chinese/English bluebook output, XeLaTeX is recommended.}
+\fi
+\ifXeTeX
+  \RequirePackage{fontspec}
+  \RequirePackage{xeCJK}
+  \defaultfontfeatures{Ligatures=TeX}
+  \setmainfont{TeX Gyre Termes}
+  \setsansfont{TeX Gyre Heros}
+  \setmonofont{Latin Modern Mono}
+  \setCJKmainfont{FandolSong-Regular}
+  \setCJKsansfont{FandolHei-Regular}
+  \setCJKmonofont{FandolFang-Regular}
+\fi
+\ifLuaTeX
+  \RequirePackage{fontspec}
+  \defaultfontfeatures{Ligatures=TeX}
+  \setmainfont{TeX Gyre Termes}
+  \setsansfont{TeX Gyre Heros}
+  \setmonofont{Latin Modern Mono}
+\fi
+
+% =============================
+% Layout
+% =============================
+\geometry{a4paper,margin=1in,headheight=16pt,footskip=28pt}
+\setstretch{1.12}
+\setlength{\parskip}{0.35em}
+\setlength{\parindent}{2em}
+\captionsetup{font=small,labelfont=bf}
+\setlist[itemize]{leftmargin=1.8em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=2.2em,itemsep=0.25em,topsep=0.35em}
+\renewcommand{\arraystretch}{1.25}
+
+% =============================
+% Colors
+% =============================
+\definecolor{BBPrimary}{HTML}{0A4FA3}
+\definecolor{BBSecondary}{HTML}{2F6FB6}
+\definecolor{BBAccent}{HTML}{00A3A3}
+\definecolor{BBText}{HTML}{1C2430}
+\definecolor{BBMuted}{HTML}{5B6677}
+\definecolor{BBLine}{HTML}{D9E2F0}
+\definecolor{BBSoft}{HTML}{F4F8FC}
+\definecolor{BBWarn}{HTML}{A35A00}
+\definecolor{BBDanger}{HTML}{A31E1E}
+\definecolor{BBGood}{HTML}{1E7A37}
+
+\color{BBText}
+
+% =============================
+% Hyperref
+% =============================
+\hypersetup{
+  colorlinks=true,
+  linkcolor=BBPrimary,
+  urlcolor=BBSecondary,
+  citecolor=BBAccent,
+  pdftitle={AI Security Bluebook},
+  pdfauthor={},
+  pdfsubject={Unified AI Security Control Plane / Decoupled Safety / Evaluation Framework},
+  pdfkeywords={AI Security, Control Plane, Decoupled Safety, Evaluation Framework}
+}
+
+% =============================
+% Metadata commands
+% =============================
+\newcommand{\BBTitle}{}
+\newcommand{\BBSubtitle}{}
+\newcommand{\BBAuthor}{}
+\newcommand{\BBOrg}{}
+\newcommand{\BBVersion}{}
+\newcommand{\BBDate}{}
+\newcommand{\BBClassification}{}
+\newcommand{\BBCoverNote}{}
+\newcommand{\BBKeywords}{}
+
+\newcommand{\bluebooktitle}[1]{\renewcommand{\BBTitle}{#1}}
+\newcommand{\bluebooksubtitle}[1]{\renewcommand{\BBSubtitle}{#1}}
+\newcommand{\bluebookauthor}[1]{\renewcommand{\BBAuthor}{#1}}
+\newcommand{\bluebookorg}[1]{\renewcommand{\BBOrg}{#1}}
+\newcommand{\bluebookversion}[1]{\renewcommand{\BBVersion}{#1}}
+\newcommand{\bluebookdate}[1]{\renewcommand{\BBDate}{#1}}
+\newcommand{\bluebookclassification}[1]{\renewcommand{\BBClassification}{#1}}
+\newcommand{\bluebookcovernote}[1]{\renewcommand{\BBCoverNote}{#1}}
+\newcommand{\bluebookkeywords}[1]{\renewcommand{\BBKeywords}{#1}}
+
+% =============================
+% Title page
+% =============================
+\newcommand{\makebluebookcover}{%
+  \begin{titlepage}
+    \thispagestyle{empty}
+    \noindent
+    {\Large\bfseries\color{BBPrimary} Technical Bluebook}\par
+    \vspace{1.3cm}
+
+    {\fontsize{26}{32}\selectfont\bfseries \BBTitle\par}
+    \vspace{0.35cm}
+    {\Large\color{BBMuted}\BBSubtitle\par}
+    \vspace{1.0cm}
+
+    \begin{tcolorbox}[
+      enhanced,
+      colback=BBSoft,
+      colframe=BBPrimary,
+      boxrule=0.6pt,
+      arc=2mm,
+      left=6pt,right=6pt,top=6pt,bottom=6pt]
+      \textbf{Scope.} Unified AI Security Control Plane \quad $\bullet$ \quad Decoupled Safety \quad $\bullet$ \quad Evaluation Framework
+
+      \vspace{0.35em}
+      \textbf{Purpose.} Establish a rigorous, enterprise-grade technical blueprint for controllable, auditable, and evolvable AI security.
+    \end{tcolorbox}
+
+    \vfill
+
+    \begin{tabular}{@{}p{0.22\textwidth}p{0.72\textwidth}@{}}
+      \textbf{Author(s)} & \BBAuthor \\
+      \textbf{Organization} & \BBOrg \\
+      \textbf{Version} & \BBVersion \\
+      \textbf{Date} & \BBDate \\
+      \textbf{Classification} & \BBClassification \\
+      \textbf{Keywords} & \BBKeywords \\
+    \end{tabular}
+
+    \vspace{1.2cm}
+    {\small\color{BBMuted}\BBCoverNote\par}
+  \end{titlepage}
+}
+
+% =============================
+% Page style
+% =============================
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\textcolor{BBMuted}{\nouppercase{\leftmark}}}
+\fancyhead[R]{\textcolor{BBMuted}{AI Security Bluebook}}
+\fancyfoot[C]{\textcolor{BBMuted}{\thepage}}
+\renewcommand{\headrulewidth}{0.25pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% =============================
+% Chapter / section formatting
+% =============================
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries}
+  {\color{BBPrimary}\Large Chapter \thechapter}
+  {0.2em}
+  {\Huge\color{BBText}}
+  [\vspace{0.3em}\titlerule\vspace{0.6em}]
+
+\titleformat{\section}
+  {\Large\bfseries\color{BBPrimary}}
+  {\thesection}
+  {0.6em}
+  {}
+
+\titleformat{\subsection}
+  {\large\bfseries\color{BBText}}
+  {\thesubsection}
+  {0.6em}
+  {}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries\color{BBText}}
+  {\thesubsubsection}
+  {0.6em}
+  {}
+
+\titlespacing*{\chapter}{0pt}{0pt}{1.2em}
+\titlespacing*{\section}{0pt}{1.0em}{0.5em}
+\titlespacing*{\subsection}{0pt}{0.85em}{0.4em}
+
+% TOC style
+\renewcommand{\cftchapfont}{\bfseries}
+\renewcommand{\cftsecfont}{}
+\renewcommand{\cftchappagefont}{\bfseries}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+
+% =============================
+% Theorem-like environments
+% =============================
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{assumption}[theorem]{Assumption}
+\newtheorem{property}[theorem]{Property}
+\newtheorem{invariant}[theorem]{Invariant}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% =============================
+% Boxes and custom environments
+% =============================
+\tcbset{enhanced,breakable,boxrule=0.55pt,arc=2mm,left=6pt,right=6pt,top=6pt,bottom=6pt}
+
+\newtcolorbox{executivesummarybox}{colback=BBSoft,colframe=BBPrimary,title=Executive Summary,fonttitle=\bfseries}
+\newtcolorbox{keymessagebox}{colback=BBSoft,colframe=BBSecondary,title=Key Message,fonttitle=\bfseries}
+\newtcolorbox{designprinciplebox}{colback=white,colframe=BBAccent,title=Design Principle,fonttitle=\bfseries}
+\newtcolorbox{riskbox}{colback=white,colframe=BBDanger,title=Risk / Threat,fonttitle=\bfseries}
+\newtcolorbox{evaluationbox}{colback=white,colframe=BBGood,title=Evaluation / Assurance,fonttitle=\bfseries}
+\newtcolorbox{researchbox}{colback=white,colframe=BBWarn,title=Open Problem / Research Agenda,fonttitle=\bfseries}
+\newtcolorbox{takeawaybox}{colback=BBSoft,colframe=BBPrimary,title=Key Takeaway,fonttitle=\bfseries}
+
+\newcommand{\executivesummary}[1]{\begin{executivesummarybox}#1\end{executivesummarybox}}
+\newcommand{\keymessage}[1]{\begin{keymessagebox}#1\end{keymessagebox}}
+\newcommand{\designprinciple}[2]{\begin{designprinciplebox}\textbf{#1}. #2\end{designprinciplebox}}
+\newcommand{\securityrisk}[2]{\begin{riskbox}\textbf{#1}. #2\end{riskbox}}
+\newcommand{\evaluationnote}[2]{\begin{evaluationbox}\textbf{#1}. #2\end{evaluationbox}}
+\newcommand{\researchagenda}[2]{\begin{researchbox}\textbf{#1}. #2\end{researchbox}}
+\newcommand{\keytakeaway}[1]{\begin{takeawaybox}#1\end{takeawaybox}}
+
+\newenvironment{chapterobjective}{\begin{tcolorbox}[colback=BBSoft,colframe=BBLine,title=Chapter Objective,fonttitle=\bfseries]}{\end{tcolorbox}}
+\newenvironment{chapterboundary}{\begin{tcolorbox}[colback=white,colframe=BBLine,title=System Boundary,fonttitle=\bfseries]}{\end{tcolorbox}}
+\newenvironment{chapterdeliverables}{\begin{tcolorbox}[colback=white,colframe=BBLine,title=Deliverables,fonttitle=\bfseries]}{\end{tcolorbox}}
+
+% =============================
+% Reusable list macros
+% =============================
+\newcommand{\bluebookbullet}[1]{\item \textbf{#1}}
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\TODO}[1]{\textcolor{BBDanger}{[TODO: #1]}}
+
+% Standard analytic blocks
+\newenvironment{problemstatement}{\Needspace{6\baselineskip}\subsection*{Problem Statement}}{}
+\newenvironment{threatmodel}{\Needspace{6\baselineskip}\subsection*{Threat Model}}{}
+\newenvironment{securityobjectives}{\Needspace{6\baselineskip}\subsection*{Security Objectives}}{}
+\newenvironment{designprinciples}{\Needspace{6\baselineskip}\subsection*{Design Principles}}{}
+\newenvironment{systemassumptions}{\Needspace{6\baselineskip}\subsection*{Assumptions and Constraints}}{}
+\newenvironment{evaluationcriteria}{\Needspace{6\baselineskip}\subsection*{Evaluation Criteria}}{}
+\newenvironment{operationalnotes}{\Needspace{6\baselineskip}\subsection*{Operational Notes}}{}
+\newenvironment{researchquestions}{\Needspace{6\baselineskip}\subsection*{Open Research Questions}}{}
+
+% =============================
+% Tables for AI security content
+% =============================
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\newenvironment{threattable}{%
+  \begin{longtable}{p{0.16\textwidth}p{0.20\textwidth}p{0.22\textwidth}p{0.18\textwidth}p{0.16\textwidth}}
+  \toprule
+  Threat Surface & Adversary Goal & Attack Pattern & Potential Impact & Control Point \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Threat Surface & Adversary Goal & Attack Pattern & Potential Impact & Control Point \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+}{\end{longtable}}
+
+\newenvironment{evaluationmatrixtable}{%
+  \begin{longtable}{p{0.19\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.18\textwidth}}
+  \toprule
+  Capability & Security Metric & Utility Metric & System Metric & Evidence / Benchmark \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Capability & Security Metric & Utility Metric & System Metric & Evidence / Benchmark \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+}{\end{longtable}}
+
+\newenvironment{deliverabletable}{%
+  \begin{longtable}{p{0.18\textwidth}p{0.2\textwidth}p{0.26\textwidth}p{0.16\textwidth}p{0.12\textwidth}}
+  \toprule
+  Module & Deliverable & Acceptance Criteria & Owner & Phase \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Module & Deliverable & Acceptance Criteria & Owner & Phase \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+}{\end{longtable}}
+
+% =============================
+% Domain-specific commands
+% =============================
+\newcommand{\ControlPlane}{\textsc{Unified AI Security Control Plane}}
+\newcommand{\DecoupledSafety}{\textsc{Decoupled Safety}}
+\newcommand{\EvalFramework}{\textsc{Evaluation Framework}}
+\newcommand{\SafetyKernel}{\textsc{Decoupled Safety Kernel}}
+\newcommand{\Guardrails}{\textsc{Guardrails}}
+\newcommand{\RAG}{\textsc{RAG}}
+\newcommand{\ASR}{\textsc{ASR}}
+\newcommand{\LLM}{\textsc{LLM}}
+\newcommand{\AIT}{\textsc{AI Trust}}
+
+% Reusable chapter starter
+\newcommand{\chapterstarter}[3]{%
+  \chapter{#1}
+  \begin{chapterobjective}
+  #2
+  \end{chapterobjective}
+  \begin{chapterdeliverables}
+  #3
+  \end{chapterdeliverables}
+}
+
+% Appendix formatting
+\renewcommand{\appendixname}{Appendix}
+
+% A minimal bluebook abstract environment
+\newenvironment{bluebookabstract}{\begin{center}\begin{minipage}{0.92\textwidth}\small\textbf{Abstract. }}{\end{minipage}\end{center}}
+
+% Frontmatter helper
+\newcommand{\makebluebookfrontmatter}{%
+  \pagenumbering{roman}
+  \makebluebookcover
+  \tableofcontents
+  \clearpage
+  \pagenumbering{arabic}
+}

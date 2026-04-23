@@ -1,0 +1,56 @@
+BLUEBOOK REVISION — SOURCE MAPPING AND PRINCIPLES
+==================================================
+
+Source → final structure (bluebook_template.tex)
+------------------------------------------------
+Executive Summary.md + Chapter1.md + 蓝皮书总纲.md
+  → Abstract; Executive Summary box; Chapter 1 (strategic context, boundary,
+    adversary assumptions, expanded threattable, CIA + extended objectives,
+    trade-offs, design principles).
+
+(No standalone draft chapter — synthesized)
+  → Chapter 2 Decoupled Safety: definition, invariants, security model tuple,
+    failure modes, research agenda.
+
+Chapter4.md + Chapter1.md (control-plane diagram) + 总纲 (layered view)
+  → Chapter 3 reference architecture; data/control/evidence planes; Safety
+    Kernel interfaces; expanded deliverabletable.
+
+Chapter5.md + Chapter4.md
+  → Chapter 4 Measure→Profile→Select→Enforce; policy lifecycle; RAG retrieval
+    security; tool-use control; escalation/HITL/fallback.
+
+Chapter2.md + Chapter3.md + Chapter6.md (evidence requirements)
+  → Chapter 5 semantics / benchmark constitution / acceptance contracts; metric
+    layers; multi-track evaluation subsection; evaluationmatrixtable; protocols.
+
+Chapter6.md + Chapter8.md + Chapter7.md (geo/multilingual program themes)
+  → Chapter 6 governance, roadmap, deliverabletable; Appendix A geo/multilingual
+    patterns; Appendix B terminology and role boundaries.
+
+Merged / de-emphasized in prose
+---------------------------------
+• Repeated “five-panel” control-plane narrative appears once in Ch1; not re-litigated each chapter.
+• Duplicate dual-track / TC260 specifics consolidated into Ch5 (multi-track) + Appendix A (patterns).
+• DTL / xCloud / Tianmu operational names reduced to neutral “security judgment provider vs execution platform” in Appendix B.
+
+Removed from LaTeX body
+-----------------------
+• Meta phrasing (“current design already states…”).
+• External PowerPoint links.
+• Per-chapter redundant closing summaries replaced by section-level takeaways where needed.
+
+REVISION PRINCIPLES (8–12)
+--------------------------
+1. Single thesis: externalized Unified Control Plane + Decoupled Safety + evidence-centric Evaluation Framework.
+2. Align chapter order and titles to bluebook_template.tex (six chapters + appendices), not the eight Markdown files.
+3. Insert a full Decoupled Safety chapter; do not collapse it into “runtime” only.
+4. Threat model and control points aligned; expand rows for model execution and orchestration.
+5. Security objectives explicitly include CIA plus controllability, auditability, composability, utility preservation, with stated trade-offs.
+6. Terminology locked to ai_security_bluebook.sty macros: \ControlPlane{}, \DecoupledSafety{}, \SafetyKernel{}, \EvalFramework{}, \Guardrails{}, \RAG{}.
+7. RAG and tool-use receive dedicated sections matching enterprise attack surface, not only internal detector pipelines.
+8. Evaluation is an assurance system: contracts, multi-track evaluation, governance metrics, release-style evidence—not a score alone.
+9. Governance and program structure (former Ch7–8) close in Ch6; avoid elevating locale to a fourth “pillar.”
+10. Formal bluebook prose: paragraphs over bullet minutes; lists where they clarify structure only.
+11. Tables (threat, evaluation, deliverable) are substantively filled, not placeholder stubs.
+12. Compile target: XeLaTeX per style package; PDF produced from bluebook_template.tex.
