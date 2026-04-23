@@ -86,6 +86,12 @@
 
 \noindent\textbf{三条硬约束（避免被读成“模块集合”）。}(i) \textbf{边界硬约束：}安全 judgment / evidence / release 属于控制面；SLA/编排属于执行平台；二者通过事件与证据键（\texttt{correlation\_id}、\texttt{decision\_record\_id}、\texttt{policy\_version}）对接，而非“共同解释语义”。(ii) \textbf{语义硬约束：}多轨不是多打几套分，而是语义分叉；治理汇合不允许隐式加权把多轨压成单一 score。 (iii) \textbf{产出硬约束：}每章最终都必须回指到可发布的产出物：证据包（Mechanism/Release）、acceptance contract、claim discipline 与 bounded deployment contract；否则视为未进入 guarantee production system。
 
+\section{责任拓扑：安全语义与平台执行的系统边界}
+\textbf{主线：}\ControlPlane{}。本书的第一张“架构图”应被理解为\emph{责任边界拓扑}而非组件清单：benchmark governance 负责定义可主张义务与测量义务；控制面负责将义务编译为 judgment 与可执行强制并写证据；执行平台负责在 \textsc{sla} 下承接动作而不解释安全语义；evidence/release gating 负责把行为提升为可辩护的放行对象；geo-specific intelligence 负责提供不可被全球平均语义吞没的语义源。该边界是 foundational systems boundary，而非实现细节。
+
+\section{保证生产的最小充分条件：四元闭合与版本面}
+\textbf{主线：}\ControlPlane{}。\textbf{最小充分条件：}任何可对外陈述的 bounded guarantee，都必须满足 judgment、execution、evidence、release 在同一版本面可闭合：判断可执行为强制，强制可沉淀为可 join 的证据，证据可编译为放行材料并约束后续回归与策略演化。缺任一环，即使局部模块“很强”，组织也只能生产一次性分数，无法生产可审计的保证对象。
+
 \section{资产、对手模型与运行假设}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。受保护资产包括：用户与企业数据的机密性，提示与检索内容的完整性，工具侧效果与参数完整性与不可否认性，服务在 \textsc{sla} 内的可用性，以及审计记录的完整性。考虑的对手包括：构造对抗性提示；经检索信道投毒或泄露；滥用或串联工具调用；操纵会话与工作流状态；滥用运营面（如文档中的隐匿指令）。内部威胁主要通过职责分离、证据不可篡改与工具最小权限来缓解——而非仅靠模型对齐。
 
@@ -362,6 +368,9 @@
 
 \keytakeaway{第4章把运行时写清三件事：热路径上的 T/D/S 纪律、冷路径上的 Tier-R2 与 ORA 适应、以及全程可 join 的证据——使强制协议与第3章三平面及第5章放行共用同一对象语言。}
 
+\section{双时间尺度风险自适应控制：online enforcement 与 offline release supervision}
+\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书的方法论核心不是「评测驱动控制」的口号，而是一个\textbf{双时间尺度控制系统}：\textbf{快时间尺度（热路径）}在单请求预算内实现实例级强制（online controller）；\textbf{慢时间尺度（冷路径）}在版本级更新策略、阈值、能力包并监督放行（offline estimator/policy updater/release supervisor）。二者通过证据面与发布闸耦合：热路径每次决策都写入可 join 的 evidence；冷路径只产出\emph{下一版}可发布配置（\texttt{policy\_version} 单调），并以放行证据包与 bounded contract 限定对外陈述。
+
 % =============================
 % 第5章
 % =============================
@@ -374,6 +383,9 @@
   \item 新增：Track A/B claim discipline、Minimum Mechanism Evidence Pack、Minimum Release Evidence Pack（Release Evidence Pack）。
 \end{itemize}
 }
+
+\section{从测量到控制选择：评测输出作为决策信号（decision signals）}
+\textbf{主线：}\EvalFramework{}。评测框架的输出不是单一 score，而是供控制面选择控制深度与能力包的\emph{决策信号}：哪些场景需要升级重检测路径、哪些必须降级到 D1--D4、哪些条件触发 Tier-R2、哪些变化要求收缩工具面或检索域。该信号必须可追溯到（i）RQ；（ii）轨道标识（Track A/B）；（iii）具体 evidence 条目与样本回放（\texttt{correlation\_id} / \texttt{decision\_record\_id}）；并最终被编译进 acceptance contract 与 release decision。
 
 \section{RQ-first：从研究问题到放行结论的证据组织}
 \textbf{主线：}\EvalFramework{}。证据引擎的入口不是「一张总分表」，而是可审计的问题集合：每个 RQ 都绑定（i）允许给出的结论类型；（ii）必需证据来源；（iii）进入放行证据包的最低门槛。
@@ -460,6 +472,12 @@
 \section{Claim discipline（主张口径）}
 \textbf{主线：}综合。对外陈述必须同时写清：我们主张什么、我们不主张什么、在何种前提下成立、前提破坏时退化到何种最低形态；并声明不同观测/控制能力分层下可主张的保证上限。
 
+\subsection{保证语法（Guarantee grammar）：什么样的陈述才被允许}
+\textbf{主线：}综合。\textbf{一条可陈述保证}必须包含：范围（场景/租户/法域/语言/能力包）、不变量（例如 S1）、退化语义（T/D/Tier-R/ORA）、前提条件、以及可引用的证据包条目与契约条款。缺任一项，则该陈述不被允许进入对外材料或合同指标。\textbf{Non-goals}是保证语法的负空间：禁止生成无法被证据包与契约约束的泛化句式。
+
+\subsection{Claim-to-evidence 编译：从陈述到证据包与契约条款的映射}
+\textbf{主线：}\EvalFramework{}。Claim discipline 不是声明清单，而是\emph{编译关系}：每条 claim 必须能被编译为 acceptance contract 的条款集合，并在第5章 Minimum Release Evidence Pack 中找到对应引用链（包含 \texttt{policy\_version}、\texttt{correlation\_id} / \texttt{decision\_record\_id}、轨道标识与必要审批指针）。无法编译的陈述视为不可验证主张，应降级为研究议程或非目标。
+
 \subsection{Non-goals（不主张）}
 \textbf{不主张：}（i）对任意自然语言任务与任意工具生态的全局可判定安全；（ii）将单次离线评测或单一攻击成功率等同于生产安全；（iii）将 Track B 上界结果不经迁移论证写入对外「可部署结论」；（iv）保证模型永不产生事实错误——本书控制的是\emph{策略义务与证据}，而非一般真理；（v）在缺少 \texttt{policy\_version} 与证据面 join 键的情况下，对外声称「已审计」或「可回放」。
 
@@ -485,6 +503,9 @@
   \item \textbf{Semi-white-box}——部分字段可用、部分只能抽样；可主张 S1 与核心 Fail-Safe 纪律，但对回放与最坏情形主张必须收缩并显式披露抽样误差。
   \item \textbf{Black-box}——仅有粗粒度日志或外部接口观测；不得主张可回放机制；高风险工具与检索能力包须默认收缩，Track A 结论只可在更强前提下陈述。
 \end{itemize}
+
+\subsection{类型检查：在分层条件下的可主张上限}
+\textbf{主线：}综合。部署分层相当于保证语法的\emph{类型环境}：white-box 允许陈述机制级可回放与差分重跑性质；semi-white-box 仅允许在抽样误差披露下陈述局部机制保证；black-box 禁止陈述“可回放/可证明机制”，只能陈述更弱的 bounded guarantees（例如能力包收缩、S1、可解释错误码与 Tier-R2 authority boundary 的制度保证）。任何超出类型环境的陈述必须被拒绝进入 release defense。
 
 \section{Bounded deployment contract（有界部署合同）}
 \textbf{主线：}综合。将 Claim Discipline 与第5章放行证据包落为可签署条款：范围、能力包、S1 与降级语义、证据义务、以及变更纪律。
