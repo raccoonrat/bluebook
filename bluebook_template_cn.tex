@@ -70,7 +70,7 @@
 \end{problemstatement}
 
 \section{控制面必要性：义务—断裂点—总对象}
-\textbf{主线：}\ControlPlane{}。将\emph{义务}映射到\emph{控制点}，再追问若缺少总对象会在何处断裂。（1）\textbf{租户与数据义务}——同一权重无法编码多租户差异；义务必须落在可版本 \textsc{policy} 与可审计绑定上，否则升级模型即静默改写「有效策略」。（2）\textbf{检索与工具义务}——义务附着在语料切片与工具能力矩阵上；无统一事件面则无法在放行中复现「允许了哪一段外部文本、哪一次调用」。（3）\textbf{放行义务}——发布材料必须引用与线上一致的策略包、模型路由与检测器版本；若证据 schema 不统一，法务与对内问责无法复用同一对象。\textbf{链接四元：}判断输出必须可执行为强制动作；强制必须写证据；证据必须可进入放行与回归；放行约束反过来收紧评测与线上策略——四者共享同一 \ControlPlane{} 编目，否则任一环都会沦为局部优化或与事实脱节。
+\textbf{主线：}\ControlPlane{}。将\emph{义务}映射到\emph{控制点}，再追问若缺少总对象会在何处断裂。（1）\textbf{租户与数据义务}——同一权重无法编码多租户差异；义务必须落在可版本 \textsc{policy} 与可审计绑定上，否则升级模型即静默改写「有效策略」。（2）\textbf{检索与工具义务}——义务附着在语料切片与工具能力矩阵上；无统一事件面则无法在放行中复现「允许了哪一段外部文本、哪一次调用」。（3）\textbf{放行义务}——发布材料必须引用与线上一致的策略包、模型路由与检测器版本；若证据 schema 不统一，法务与对内问责无法复用同一对象。\textbf{链接四元：}判断必须可执行为强制；强制必须写证据；证据必须可进入放行。四者共享同一版本面与关联键，否则只能生产一次性分数，无法生产可审计的保证对象。
 
 \section{控制面作为唯一总对象：否定性论证与四元闭合}
 \textbf{主线：}\ControlPlane{}。
@@ -100,8 +100,8 @@
 \section{责任拓扑：安全语义与平台执行的系统边界}
 \textbf{主线：}\ControlPlane{}。本书的第一张“架构图”应被理解为\emph{责任边界拓扑}而非组件清单：benchmark governance 负责定义可主张义务与测量义务；控制面负责将义务编译为 judgment 与可执行强制并写证据；执行平台负责在 \textsc{sla} 下承接动作而不解释安全语义；evidence/release gating 负责把行为提升为可辩护的放行对象；geo-specific intelligence 负责提供不可被全球平均语义吞没的语义源。该边界是 foundational systems boundary，而非实现细节。
 
-\section{保证生产的最小充分条件：四元闭合与版本面}
-\textbf{主线：}\ControlPlane{}。\textbf{最小充分条件：}任何可对外陈述的 bounded guarantee，都必须满足 judgment、execution、evidence、release 在同一版本面可闭合：判断可执行为强制，强制可沉淀为可 join 的证据，证据可编译为放行材料并约束后续回归与策略演化。缺任一环，即使局部模块“很强”，组织也只能生产一次性分数，无法生产可审计的保证对象。
+\section{保证生产的工程判据：四元闭合的版本面与 join 条件}
+\textbf{主线：}\ControlPlane{}。\textbf{工程判据：}一条可对外陈述的 bounded guarantee，必须能在证据面被\emph{可 join}地复原。最低要求包括：\texttt{policy\_version}（绑定当时有效义务）、\texttt{correlation\_id}（串联同一请求/会话事件序）、\texttt{decision\_record\_id}（唯一定位决策证据条目）、\texttt{rationale\_code}（理由码口径）、以及（若触发 Tier-R2）\texttt{approval\_ref}。缺任一键，即使局部模块“很强”，放行材料也无法证明“当时依据什么、执行了什么、记录了什么”，从而不构成保证生产系统的合格输出。
 
 \section{资产、对手模型与运行假设}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。受保护资产包括：用户与企业数据的机密性，提示与检索内容的完整性，工具侧效果与参数完整性与不可否认性，服务在 \textsc{sla} 内的可用性，以及审计记录的完整性。考虑的对手包括：构造对抗性提示；经检索信道投毒或泄露；滥用或串联工具调用；操纵会话与工作流状态；滥用运营面（如文档中的隐匿指令）。内部威胁主要通过职责分离、证据不可篡改与工具最小权限来缓解——而非仅靠模型对齐。
@@ -403,6 +403,7 @@
 
 \section{双时间尺度风险自适应控制：online enforcement 与 offline release supervision}
 \textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书的方法论核心不是「评测驱动控制」的口号，而是一个\textbf{双时间尺度控制系统}：\textbf{快时间尺度（热路径）}在单请求预算内实现实例级强制（online controller）；\textbf{慢时间尺度（冷路径）}在版本级更新策略、阈值、能力包并监督放行（offline estimator/policy updater/release supervisor）。二者通过证据面与发布闸耦合：热路径每次决策都写入可 join 的 evidence；冷路径只产出\emph{下一版}可发布配置（\texttt{policy\_version} 单调），并以放行证据包与 bounded contract 限定对外陈述。
+\noindent 因而，第5章不再把评测理解为独立评分系统，而将其视为该双时间尺度控制架构中的冷路径编译器：把测量、语义分叉与多轨证据转化为可用于 release defense 的治理对象。
 
 % =============================
 % 第5章
@@ -418,10 +419,10 @@
 }
 
 \section{语义分叉与治理汇合：semantic bifurcation with governance convergence}
-\textbf{主线：}\EvalFramework{}。本章的多轨不是“多打几套分”，而是承认企业安全存在多个不可通约的语义空间（semantic bifurcation），并要求它们在共享执行骨架上共存：套件、聚合逻辑与报告模板可不同，但必须在放行时治理汇合（governance convergence）——以证据包与契约条款输出统一决策，而非压缩为单一 score。这一 framing 把评测从工程流程升维为保证生产系统的语义编译层。
+\textbf{主线：}\EvalFramework{}。多轨不是“多打几套分”，而是承认企业安全存在多个不可通约的语义空间（semantic bifurcation）；它们可共享执行骨架，但必须在放行时治理汇合（governance convergence）——以证据包与契约条款输出统一决策，而非压缩为单一 score。
 
 \section{从测量到控制选择：评测输出作为决策信号（decision signals）}
-\textbf{主线：}\EvalFramework{}。评测框架的输出不是单一 score，而是供控制面选择控制深度与能力包的\emph{决策信号}：哪些场景需要升级重检测路径、哪些必须降级到 D1--D4、哪些条件触发 Tier-R2、哪些变化要求收缩工具面或检索域。该信号必须可追溯到（i）RQ；（ii）轨道标识（Track A/B）；（iii）具体 evidence 条目与样本回放（\texttt{correlation\_id} / \texttt{decision\_record\_id}）；并最终被编译进 acceptance contract 与 release decision。
+\textbf{主线：}\EvalFramework{}。在图~\ref{fig:dual-timescale-loop} 所示闭环中，evaluation 的职责不是给出抽象分数，而是把多轨测量编译成 runtime control 与 release governance 可消费的\emph{decision signals}。其最低要求是可追溯到：RQ、轨道标识（Track A/B）、以及 evidence 条目与回放样本（\texttt{correlation\_id}/\texttt{decision\_record\_id}）。
 
 \section{RQ-first：从研究问题到放行结论的证据组织}
 \textbf{主线：}\EvalFramework{}。证据引擎的入口不是「一张总分表」，而是可审计的问题集合：每个 RQ 都绑定（i）允许给出的结论类型；（ii）必需证据来源；（iii）进入放行证据包的最低门槛。
@@ -448,7 +449,7 @@
 \end{itemize}
 
 \section{多轨评测进入统一治理决策：统一决策不等于统一分数}
-\noindent 多轨评测的关键不在于“跑两套测试”，而在于：在共享执行骨架上保留语义分叉，并在统一治理决策板上完成 bounded contract 所要求的汇合。
+\noindent 多轨评测的关键不在于“跑两套测试”，而在于在共享执行骨架上保留语义分叉，并在统一治理决策板上完成 bounded contract 所要求的汇合。
 \begin{figure}[htbp]
   \centering
   \IfFileExists{figures/Fig2.png}{\includegraphics[width=0.92\textwidth]{figures/Fig2.png}}{%
@@ -457,7 +458,7 @@
   \caption{多轨评测的语义分叉与统一治理汇合}
   \label{fig:semantic-bifurcation}
 \end{figure}
-\noindent 本图说明，企业级 AI 安全的评测并非单一评分问题，而是在共享执行骨架上的多语义轨道治理问题：轨道可共享 run manager、execution engine、result store 与 \textsc{ci}/\textsc{cd} 接口，但在套件、聚合逻辑与输出语义上保持独立；它们最终并非汇总为单一总分，而是进入统一治理决策板，形成 risk profile、release recommendation 与 audit report。
+\noindent 本图说明：轨道可共享执行骨架，但语义与聚合不可强行压缩；它们进入统一治理决策板输出放行结论与审计材料，而非单一总分。
 \textbf{主线：}\EvalFramework{}。不同监管或组织义务不必坍缩为单一分数。可行模式是：\emph{共享执行主干}（运行定义、目标、制品、结果存储、\textsc{ci}/\textsc{cd} 挂钩）配以在套件、聚合逻辑与报告模板上各异的\emph{多条评测轨}，并在放行时汇入\emph{统一治理决策板}。\textbf{关键澄清：}统一治理决策统一的是「放行/限权放行/灰度/回滚」与其证据引用，而不是把多轨结果压成一个 score；任何压缩必须显式披露权重与损失，并在第6章 claim discipline 中标注为新的主张前提。
 
 \subsection{Track A / Track B 的 claim discipline（禁止混读）}
@@ -519,10 +520,24 @@
 \textbf{主线：}综合。对外陈述必须同时写清：我们主张什么、我们不主张什么、在何种前提下成立、前提破坏时退化到何种最低形态；并声明不同观测/控制能力分层下可主张的保证上限。
 
 \subsection{保证语法（Guarantee grammar）：什么样的陈述才被允许}
-\textbf{主线：}综合。\textbf{一条可陈述保证}必须包含：范围（场景/租户/法域/语言/能力包）、不变量（例如 S1）、退化语义（T/D/Tier-R/ORA）、前提条件、以及可引用的证据包条目与契约条款。缺任一项，则该陈述不被允许进入对外材料或合同指标。\textbf{Non-goals}是保证语法的负空间：禁止生成无法被证据包与契约约束的泛化句式。
+\textbf{主线：}综合。\textbf{允许进入对外材料的 guarantee statement，必须同时声明：}
+\begin{enumerate}
+  \item \textbf{Scope：}场景/租户/法域/语言/能力包边界；
+  \item \textbf{Invariant：}服务不变量（例如 S1）；
+  \item \textbf{Degradation semantics：}T/D/Tier-R/ORA 的退化语义；
+  \item \textbf{Preconditions：}成立前提；
+  \item \textbf{Evidence references：}可引用的证据包条目与契约条款；
+  \item \textbf{Deployment regime：}white-box / semi-white-box / black-box。
+\end{enumerate}
+\noindent 缺任一项，则该陈述不被允许进入对外材料或合同指标。\textbf{Non-goals}是保证语法的负空间：禁止生成无法被证据包与契约约束的泛化句式。
 
 \subsection{Claim-to-evidence 编译：从陈述到证据包与契约条款的映射}
-\textbf{主线：}\EvalFramework{}。Claim discipline 不是声明清单，而是\emph{编译关系}：每条 claim 必须能被编译为 acceptance contract 的条款集合，并在第5章 Minimum Release Evidence Pack 中找到对应引用链（包含 \texttt{policy\_version}、\texttt{correlation\_id} / \texttt{decision\_record\_id}、轨道标识与必要审批指针）。无法编译的陈述视为不可验证主张，应降级为研究议程或非目标。
+\textbf{主线：}\EvalFramework{}。\textbf{编译规则：}每条 claim 必须同时满足下列可追溯性，否则不得进入 release defense。
+\begin{itemize}
+  \item \textbf{编译到 contract：}可被映射为 acceptance contract 的条款集合（阈值/例外/能力包/S1/退化语义）。
+  \item \textbf{编译到 evidence：}在 Minimum Release Evidence Pack 中找到引用链（\texttt{policy\_version}、\texttt{correlation\_id}/\texttt{decision\_record\_id}、轨道标识、必要审批指针）。
+\end{itemize}
+\noindent 无法编译的陈述视为不可验证主张，应降级为研究议程或非目标。
 
 \subsection{Non-goals（不主张）}
 \textbf{不主张：}（i）对任意自然语言任务与任意工具生态的全局可判定安全；（ii）将单次离线评测或单一攻击成功率等同于生产安全；（iii）将 Track B 上界结果不经迁移论证写入对外「可部署结论」；（iv）保证模型永不产生事实错误——本书控制的是\emph{策略义务与证据}，而非一般真理；（v）在缺少 \texttt{policy\_version} 与证据面 join 键的情况下，对外声称「已审计」或「可回放」。
@@ -551,10 +566,17 @@
 \end{itemize}
 
 \subsection{类型检查：在分层条件下的可主张上限}
-\textbf{主线：}综合。部署分层相当于保证语法的\emph{类型环境}：white-box 允许陈述机制级可回放与差分重跑性质；semi-white-box 仅允许在抽样误差披露下陈述局部机制保证；black-box 禁止陈述“可回放/可证明机制”，只能陈述更弱的 bounded guarantees（例如能力包收缩、S1、可解释错误码与 Tier-R2 authority boundary 的制度保证）。任何超出类型环境的陈述必须被拒绝进入 release defense。
+\textbf{主线：}综合。\textbf{类型检查（许可/禁止）：}
+\begin{itemize}
+  \item \textbf{White-box：}允许陈述机制级可回放与差分重跑性质。
+  \item \textbf{Semi-white-box：}仅允许在抽样误差披露下陈述局部机制保证。
+  \item \textbf{Black-box：}禁止陈述“可回放/可证明机制”；仅允许更弱的 bounded guarantees（能力包收缩、S1、可解释错误码、Tier-R2 authority boundary）。
+\end{itemize}
+\noindent 任何超出类型环境的陈述必须被拒绝进入 release defense。
 
 \subsection{可陈述保证的句式模板（最小集合）}
 \textbf{主线：}综合。以下句式可作为对外陈述的最小模板（每条均须指向证据包引用链）：(i) \textbf{范围句：}在\{场景/租户/法域/语言\}与\{能力包\}边界内，系统以 \texttt{policy\_version}=$v$ 提供\{可验收保证\}。(ii) \textbf{不变量句：}对声明为同步的接口，系统满足 S1，并在 T1--T3 成立时仅在 D1--D4 空间内退化。(iii) \textbf{证据句：}上述保证由 Release Evidence Pack 的\{条目编号/制品哈希/回放样本\}支撑，可由 \texttt{correlation\_id}/\texttt{decision\_record\_id} 复原。(iv) \textbf{退化句：}当前提\{列举\}不满足时，系统收缩为\{最低形态\}并同步收缩对外主张。
+\par\noindent 上述模板构成最小陈述集合；若超出该集合，必须首先回到 6.1.1--6.1.2 检查其是否可被 contract 与 evidence 编译。
 
 
 \section{Bounded deployment contract（有界部署合同）}
