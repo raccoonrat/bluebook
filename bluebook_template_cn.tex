@@ -361,42 +361,45 @@
 % =============================
 % 第5章
 % =============================
-\chapterstarter{评测框架：安全、效用与系统保证}{
-本章为\emph{证据与治理引擎翼}：以 RQ 组织评测问题与证据映射；定义契约与指标；规定多轨评测及 \textbf{Track A/B 纪律}；给出离线/影子/红队/回归/发布协议及\emph{最小可部署证据包}，与第4章运行时对象及第6章放行闸对齐。
+\chapterstarter{证据引擎与放行答辩：评测如何进入治理}{
+本章将「评测框架」升级为企业级 \emph{Evidence Engine}：以 RQ-first 组织测量义务与证据归档；以基准宪章与验收契约限定可部署结论；以指标分层与多轨评测表达不可通约风险语义；并以两类证据包（机制证据包与放行证据包）把结果汇入统一治理决策板，用于 \emph{release defense}（可审计、可回放、可差分重跑、可对外陈述）。
 }{
 \begin{itemize}
-  \item RQ-first：评测问题与证据映射表。
-  \item 契约、指标、多轨 + Track A/B 不混读纪律。
-  \item 最小可部署证据包与发布/回归协议。
+  \item RQ-first：问题$\rightarrow$证据$\rightarrow$放行结论（先锁问题，再谈分数）。
+  \item 保留：benchmark constitution / acceptance contract / metrics hierarchy / multi-track evaluation。
+  \item 新增：Track A/B claim discipline、Minimum Mechanism Evidence Pack、Minimum Release Evidence Pack（Release Evidence Pack）。
 \end{itemize}
 }
 
-\section{评测问题与证据映射（RQ-first）}
-\textbf{主线：}\EvalFramework{}。先锁评测要回答的\emph{问题}，再挂主表、机制证据与发布入口（避免「先有分再有故事」）：
+\section{RQ-first：从研究问题到放行结论的证据组织}
+\textbf{主线：}\EvalFramework{}。证据引擎的入口不是「一张总分表」，而是可审计的问题集合：每个 RQ 都绑定（i）允许给出的结论类型；（ii）必需证据来源；（iii）进入放行证据包的最低门槛。
 \begin{itemize}
-  \item \textbf{RQ1（可部署联合目标）}——在既定 \textsc{sla} 与成本下，安全—效用—时延的联合目标是否可稳定满足？证据：分层指标与线上影子对比。
-  \item \textbf{RQ2（Fail-Safe 必要性）}——在对抗与社会技术压力下，协议化降级是否降低爆炸半径且不破坏服务不变量？证据：第4章触发—动作日志与回放。
-  \item \textbf{RQ3（外置观测—路由—适应）}——带外闭环相对纯语义拦截的边际增益是否可复现？证据：对照实验与漂移监控。
-  \item \textbf{RQ4（真实攻击面与发布）}——在代表性情境与法域轨约束下，残余风险是否低于 acceptance contract？证据：多轨聚合与签批制品。
+  \item \textbf{RQ1（可部署联合目标）}——在既定 \textsc{sla} 与成本下，安全—效用—时延的联合目标是否可稳定满足？证据：指标分层 + 线上影子对比与切片。
+  \item \textbf{RQ2（Fail-Safe 必要性）}——在对抗与社会技术压力下，T1--T3 是否被正确识别、并在 D1--D4 与 Tier-R1/Tier-R2 纪律下收敛爆炸半径且不破坏 S1？证据：第4章触发—动作日志与回放。
+  \item \textbf{RQ3（ORA 带外闭环）}——Observe--Route--Adapt 相对纯语义拦截的边际增益是否可复现，且其昂贵适应动作是否保持带外与版本单调？证据：对照实验 + 漂移监控 + 候选—评测—签批—生效链。
+  \item \textbf{RQ4（真实攻击面与发布）}——在代表性情境与法域轨约束下，残余风险是否低于 acceptance contract？证据：多轨聚合 + 签批制品 + 可回放证据条目。
 \end{itemize}
 
-\section{语义、基准与验收契约}
-\textbf{主线：}\EvalFramework{}。风险须在统一分类体系下关联检测类别、评分量表与义务。\emph{基准宪章（benchmark constitution）}声明覆盖期望（须测量哪些失效类别及聚合方式）。\emph{验收契约（acceptance contract）}将场景绑定阈值与例外，把测量转化为各部署阶段的准入条件。契约与策略包、检测器包\emph{联合版本化}。
+\section{基准宪章（Benchmark Constitution）：测量义务而非总分公式}
+\textbf{主线：}\EvalFramework{}。基准宪章声明覆盖期望：须测量哪些失效类别、采用何种切片与聚合、如何报告最坏情形与置信区间。宪章的目的不是给出单一 score，而是定义企业在对外陈述前必须履行的\emph{测量义务}；任何「跳过某类失效」都必须以非目标或例外签批形式进入第6章的 bounded contract。
 
-\section{指标分层}
-\textbf{主线：}\EvalFramework{}。在四个互补层次上评测：
+\section{验收契约（Acceptance Contract）：可签署的部署准入条件}
+\textbf{主线：}\EvalFramework{}。验收契约将场景绑定阈值与例外，把测量转化为部署阶段的准入条件。契约与 \texttt{policy\_version}、检测器包与（若适用）索引世代/模型路由\emph{联合版本化}，并要求证据面可由 \texttt{correlation\_id} / \texttt{decision\_record\_id} 关联回放。契约是 Track A（可部署结论轨）的语义锚点：若缺少契约对齐，则任何高分也不得外推为可部署结论。
+
+\section{指标分层（Metrics Hierarchy）：把分数变成可辩护证据}
+\textbf{主线：}\EvalFramework{}。指标保持四层结构，但治理使用口径强调「可审计与可切片」：
 \begin{itemize}
-  \item \textbf{安全。}攻击成功概率、绕过率、注入影响、不安全工具调用、渗出企图。
-  \item \textbf{效用。}任务成功率、在有标注处的正确性、有用性代理、校准的拒绝行为、适用时的过度拒绝率。
-  \item \textbf{系统。}时延开销、吞吐影响、内存与计算成本、负载下稳定性。
-  \item \textbf{治理。}轨迹完整性、回放保真度、不可篡改校验、策略绑定正确性、事件下钻能力。
+  \item \textbf{安全。}攻击成功概率、绕过率、注入影响、不安全工具调用、渗出企图（必须能定位到事件类型与 \texttt{rationale\_code}）。
+  \item \textbf{效用。}任务成功率、正确性代理、校准拒绝与过度拒绝率（必须标注场景与工作流类型）。
+  \item \textbf{系统。}时延开销、p95/p99、吞吐影响、成本（必须区分热路径与冷路径开销，且热路径受 S1 约束）。
+  \item \textbf{治理。}轨迹完整性、回放保真度、不可篡改校验、策略绑定正确性、事件下钻能力（必须能 join 三平面字段）。
 \end{itemize}
 
-\section{共享基础设施下的多轨评测}
-\textbf{主线：}\EvalFramework{}。不同监管或组织义务不必坍缩为单一分数。可行模式是：\emph{共享执行主干}（运行定义、目标、制品、结果存储、\textsc{ci}/\textsc{cd} 挂钩）配以在套件、聚合逻辑与报告模板上各异的\emph{多条评测轨}，同时在发布决策上汇入统一决策面板。法域专属轨道（例如带本地化案例库的监管类别）宜作为一等公民，而非全球套件的薄翻译；证据包须显式引用轨道标识。
+\section{多轨评测进入统一治理决策：统一决策不等于统一分数}
+\textbf{主线：}\EvalFramework{}。不同监管或组织义务不必坍缩为单一分数。可行模式是：\emph{共享执行主干}（运行定义、目标、制品、结果存储、\textsc{ci}/\textsc{cd} 挂钩）配以在套件、聚合逻辑与报告模板上各异的\emph{多条评测轨}，并在放行时汇入\emph{统一治理决策板}。\textbf{关键澄清：}统一治理决策统一的是「放行/限权放行/灰度/回滚」与其证据引用，而不是把多轨结果压成一个 score；任何压缩必须显式披露权重与损失，并在第6章 claim discipline 中标注为新的主张前提。
 
-\subsection{Track A 与 Track B 纪律（禁止混读）}
-\textbf{制度规定：}\textbf{Track A}（或等价命名）承载\emph{可部署结论}——用于生产放行、对外合规陈述与客户合同指标；其聚合与阈值须与线上观测口径对齐。\textbf{Track B}（或等价命名）承载\emph{机制与组件上界压力测试}——用于研发排序与架构改进，\emph{不得}与 Track A 混成单一总分或单一「攻击成功率」叙事。\textbf{禁止行为：}将实验室上界结果直接写进生产放行摘要而不附迁移论证；将不同轨权重隐性合并。违反视为证据链断裂，发布闸应拒绝。
+\subsection{Track A / Track B 的 claim discipline（禁止混读）}
+\textbf{制度规定：}\textbf{Track A}（或等价命名）承载\emph{可部署结论}——用于生产放行、对外合规陈述与客户合同指标；其聚合与阈值须与线上观测口径对齐，且必须具备放行证据包。\textbf{Track B}（或等价命名）承载\emph{机制与组件上界压力测试}——用于研发排序与架构改进，\emph{不得}与 Track A 混成单一总分或单一「攻击成功率」叙事。\textbf{禁止行为：}将实验室上界结果直接写进生产放行摘要而不附迁移论证；将不同轨权重隐性合并。违反视为证据链断裂，发布闸应拒绝。
 
 \begin{evaluationcriteria}
 \begin{evaluationmatrixtable}
@@ -408,58 +411,105 @@
 \end{evaluationmatrixtable}
 \end{evaluationcriteria}
 
-\section{协议：离线、在线、回归与发布}
-\textbf{主线：}\EvalFramework{}。\textbf{离线}套件驱动迭代与阻断缺陷；\textbf{影子}部署在可控风险下对比线上流量形态下的策略变体；\textbf{红队}探测自适应攻击模型；\textbf{回归}闸在策略、模型或检测器变更时对标准包施加单调改进类约束。发布标准组合统计阈值、最坏情形上限、必备证据制品与运维签批规则。
+\section{评测协议：离线、在线、回归与发布（作为证据流水线）}
+\textbf{主线：}\EvalFramework{}。\textbf{离线}套件驱动迭代与阻断缺陷；\textbf{影子}部署在可控风险下对比线上流量形态下的策略变体；\textbf{红队}探测自适应攻击模型；\textbf{回归}闸在策略、模型或检测器变更时对标准包施加单调改进类约束。发布标准组合统计阈值、最坏情形上限、必备证据制品与运维签批规则；并要求所有制品可由 \texttt{policy\_version} 与证据面键关联到可回放的事件样本。
 
-\section{最小可部署证据包（Minimum Deployable Evidence Pack）}
-\textbf{主线：}\EvalFramework{}。在资源受限时，下列证据为\emph{最低集合}；缺任一项则不对生产主张升级或对外扩大承诺范围。
+\section{Minimum Mechanism Evidence Pack（最小机制证据包）}
+\textbf{主线：}\EvalFramework{}。\emph{机制证据包}用于回答「机制是否真的在工作」：接口闭合、回放可复现、热路径预算可控。它主要用于内部评审与 Track B 结论，但其产出也为 Track A 的放行证据包提供底座。
 \begin{itemize}
-  \item \textbf{E1--E3（Fail-Safe 协议）}——代表性对抗与社会技术场景下，触发—降级—返回路径的正确性；降级路径 p95/p99 时延与成功返回率；恢复必要性（何种条件必须进入 Tier-R2）。
-  \item \textbf{E4--E6（观测—路由—适应闭环，若适用）}——表征/行为异常监控相对基线的 \textsc{tpr}/\textsc{fpr} 与误报成本；带外路由相对纯语义拦截的边际增益；高密度可解释理由相对短提示对的效用—安全折中证据。
-  \item \textbf{跨章关联}——每条证据须带策略版本、模型路由、检测器/规则包版本及（若适用）轨道标识（Track A/B），以便与第6章证据图谱边一致。
+  \item \textbf{接口闭合与字段完整性。}三平面最小字段（第3章）在生产与回放数据中的缺失率；\texttt{event}$\rightarrow$\texttt{decision}$\rightarrow$\texttt{evidence} 的 join 成功率（以 \texttt{correlation\_id} / \texttt{decision\_record\_id} 计）。
+  \item \textbf{可回放性。}同一 \texttt{correlation\_id} 在差分重跑中：\texttt{policy\_version} 一致、\texttt{rationale\_code} 稳定、关键决策可复现（允许在显式标注的非确定区间内波动）。
+  \item \textbf{Fail-Safe 单元覆盖。}T1--T3 触发与 D1--D4 迁移的回放样例覆盖；S1 违约检测与告警链；Tier-R2 的 authority boundary 校验（不可由运行时执行身份自批）。
+  \item \textbf{预算与成本纪律。}热路径 \texttt{deadline\_budget\_ms} 命中率、超时分布、降级命中率；冷路径 ORA 适应动作的队列延迟与回滚频次。
 \end{itemize}
 
-\researchagenda{评测前沿}{在非确定解码与策略干预下，组织如何在可度量置信区间约束下联合优化安全、效用、成本、时延与可审计性？}
+\section{Minimum Release Evidence Pack（放行证据包 / Release Evidence Pack）}
+\textbf{主线：}\EvalFramework{}。\emph{放行证据包}用于 release defense：把多轨结果汇入统一决策，同时保留轨道语义与 bounded contract。建议最小结构如下（可作为发布委员会检查单）：
+\begin{itemize}
+  \item \textbf{(A) 版本与范围元数据：} \texttt{release\_id}、\texttt{policy\_version}、模型路由/检测器/索引世代版本；适用租户/法域/语言/工作流；允许工具面与检索域。
+  \item \textbf{(B) 契约摘录：} acceptance contract 的阈值、例外、S1 与允许的 D1--D4 / Tier-R2 条件。
+  \item \textbf{(C) Track A 证据：}安全/效用/系统/治理四层指标的切片报告（含最坏情形口径与置信区间），并与线上影子或历史基线对齐。
+  \item \textbf{(D) Fail-Safe 证据（E1--E3）：}T1--T3 覆盖与正确性回放；D1--D4 迁移频率、错误码分布、p95/p99；S1 违约率；Tier-R2 审批样例（\texttt{approval\_ref}）与 authority boundary。
+  \item \textbf{(E) ORA 证据（E4--E6，若适用）：}漂移监控与误报成本；带外候选—评测—签批—生效链的可审计样例；昂贵适应动作的异步纪律与回滚记录。
+  \item \textbf{(F) 治理制品：}风险接受/例外单、回滚预案、监控阈值与审计抽样计划。
+  \item \textbf{(G) 统一决策输出：}放行/限权放行/灰度/回滚，以及逐条引用上述证据条目（而非以单一总分替代）。
+\end{itemize}
+\noindent 放行证据包与第6章 claim discipline 共同构成对外可陈述的最小集合：缺任一项则默认降低可主张保证强度或收缩能力包。
 
-\keytakeaway{\EvalFramework{}将主观判断转化为证据：版本化套件、显式契约与可与 \ControlPlane{} 一道经受审计与发布辩护的关联遥测。}
+\researchagenda{评测前沿}{在非确定解码与策略干预下，组织如何在可度量置信区间约束下联合优化安全、效用、成本、时延与可审计性，并将多轨证据以 bounded contract 形式稳定进入 release defense？}
+
+\keytakeaway{第5章把评测升级为证据引擎：多轨不求统一分数，而是以 Track A/B 纪律与两类证据包把结果汇入统一治理决策板，支撑可回放、可差分重跑、可对外辩护的 release defense。}
 
 % =============================
 % 第6章
 % =============================
-\chapterstarter{治理、部署与研究路线}{
-本章闭合\emph{一主两翼}：先声明主张口径与非目标、前提与退化态（claim discipline），再给出证据图谱与发布闸、组织运作模型、分阶段路线与交付表，使对外叙述成为「有边界的企业安全契约」而非能力清单。
+\chapterstarter{主张口径、企业运作与有界部署合同}{
+本章把蓝皮书从「能力清单」升级为\emph{企业可签署的安全契约}：先给 Claim Discipline（非目标、有界保证、前提、退化态与部署分层）；再给 Bounded Deployment Contract（能力包、S1 与降级语义、证据义务与变更纪律）；再将证据图谱、发布治理、组织运作模型与路线图整合为可持续的 enterprise operating model。
 }{
 \begin{itemize}
-  \item Claim discipline：非目标、有界保证、前提与退化 regime。
-  \item 证据图谱、发布闸与分阶段交付物。
-  \item 运作模型与研究路线（含四能力单元与统一 program，附录可扩）。
+  \item Claim discipline：Non-goals / Bounded guarantees / Preconditions / Degradation regimes / 部署分层（white-box / semi-white-box / black-box）。
+  \item Bounded deployment contract：能力包、S1 与 Fail-Safe/Tier-R、证据义务与变更纪律。
+  \item Evidence graph + release governance + operating cadence：把第5章证据引擎变成可持续决策机制。
 \end{itemize}
 }
 
-\section{主张口径与非目标（Claim discipline）}
-\textbf{主线：}综合。\textbf{本书主张：}在明示前提与可观测预算下，\ControlPlane{} 结合 \DecoupledSafety{} 与 \EvalFramework{} 提供可部署、可测量、可撤回的风险控制与证据链。\textbf{本书不主张（Non-goals）：}（i）对任意自然语言任务与任意工具生态的全局可判定安全；（ii）将单次离线评测或单一攻击成功率等同于生产安全；（iii）将 Track B 上界结果不经迁移论证写入对外「可部署结论」；（iv）保证模型永不产生事实错误——本书控制的是\emph{策略义务与证据}，而非一般真理。
+\section{Claim discipline（主张口径）}
+\textbf{主线：}综合。对外陈述必须同时写清：我们主张什么、我们不主张什么、在何种前提下成立、前提破坏时退化到何种最低形态；并声明不同观测/控制能力分层下可主张的保证上限。
 
-\section{前提条件与退化态（Preconditions \& degradation regimes）}
-\textbf{主线：}综合。保证陈述依赖分层前提；前提失效时系统须退入已声明的最低形态（与第4章 Fail-Safe 及第5章最小证据包一致）。
+\subsection{Non-goals（不主张）}
+\textbf{不主张：}（i）对任意自然语言任务与任意工具生态的全局可判定安全；（ii）将单次离线评测或单一攻击成功率等同于生产安全；（iii）将 Track B 上界结果不经迁移论证写入对外「可部署结论」；（iv）保证模型永不产生事实错误——本书控制的是\emph{策略义务与证据}，而非一般真理；（v）在缺少 \texttt{policy\_version} 与证据面 join 键的情况下，对外声称「已审计」或「可回放」。
+
+\subsection{Bounded guarantees（有界保证）}
+\textbf{本书可主张：}在明示前提与可观测预算下，\ControlPlane{} 结合 \DecoupledSafety{} 与 \EvalFramework{} 提供可部署、可测量、可撤回的风险控制与证据链。典型可验收保证包括：\textbf{S1} 同步可应答；\textbf{T1--T3$\rightarrow$D1--D4} 的可测迁移纪律；\textbf{Tier-R2} 的 authority boundary；\textbf{三平面字段}可 join 的决策与证据闭合；以及（若启用）\textbf{ORA} 的带外适应与版本单调上线。每条保证必须能引用第5章放行证据包条目，而不是以「更聪明」的叙述替代。
+
+\subsection{Preconditions（前提条件）}
+\textbf{保证成立依赖：}
 \begin{itemize}
   \item \textbf{理论/语义前提}——风险分类、策略 schema 与事件类型在版本 $P$ 内可判定；不可判定部分通过验收契约显式列为残余风险。
-  \item \textbf{部署/观测前提}——关键遥测、日志不可篡改与关联 \textsc{id} 可用；若观测降级，则同时收紧可对外主张的能力包（例如禁用高风险工具）。
-  \item \textbf{治理前提}——Tier-R2 审批链、法务与数据主体权利流程可用；若不可用，则禁止依赖人工恢复的全能力路径。
-  \item \textbf{观测能力分层}——在白盒、半白盒、黑盒不同观测度下，可主张的保证强度不同；须在对外材料中分层披露，不得混称为同一「安全等级」。
+  \item \textbf{部署/观测前提}——关键遥测、日志不可篡改与关联 \textsc{id} 可用；三平面最小字段可落盘并可 join；热路径预算可度量。
+  \item \textbf{治理前提}——Tier-R2 审批链、法务与数据主体权利流程可用；发布委员会对 acceptance contract 与证据包负责。
+  \item \textbf{依赖前提}——检索、工具与外部依赖的可用性与降级语义已声明；依赖降级时触发 T2 并按契约降级。
 \end{itemize}
 
-\section{证据图谱与发布治理}
-\textbf{主线：}\EvalFramework{} / \ControlPlane{}。发布决策依赖连接基准运行、策略版本、模型路由、检测器版本、代表性遥测切片与人工审批的\emph{证据图谱}。图谱须支持差分更新：仅子系统变更时的部分重跑。治理通过显式验收契约整合法务、隐私与安全相关方，而非仅依赖临时会议。
+\subsection{Degradation regimes（退化态与最低服务形态）}
+\textbf{主线：}综合。前提失效时系统须退入已声明的最低形态：收缩能力包、禁用高副作用工具、切换只读或 D1/D4 等保守路径；并将对外主张同步收缩（不得继续使用原 Track A 结论）。退化的实现语义以第4章 Fail-Safe（T/D/S1/Tier-R）为准，证据义务以第5章放行证据包为准。
 
-\section{组织运作模型}
-\textbf{主线：}综合。高效项目持续对齐四类能力：（i）安全科学与基准治理；（ii）运行时 \SafetyKernel{} 工程；（iii）证据、\textsc{ci}/\textsc{cd} 与发布闸；（iv）多语与地域化智能——作为语义测试与检测器的源头，而非事后补丁。目标是理论、系统、基准与运营的\emph{共同演化}，而非孤立团队优化局部指标。
+\subsection{部署分层（Deployment regime layering：white-box / semi-white-box / black-box）}
+\textbf{分层原则：}观测与强制能力越弱，可主张的保证越弱；不得将不同分层混称为同一「安全等级」。
+\begin{itemize}
+  \item \textbf{White-box}——可完整落盘三平面字段与决策证据；可差分重跑与机制回放；允许更细粒度 acceptance contract 与更强 release defense。
+  \item \textbf{Semi-white-box}——部分字段可用、部分只能抽样；可主张 S1 与核心 Fail-Safe 纪律，但对回放与最坏情形主张必须收缩并显式披露抽样误差。
+  \item \textbf{Black-box}——仅有粗粒度日志或外部接口观测；不得主张可回放机制；高风险工具与检索能力包须默认收缩，Track A 结论只可在更强前提下陈述。
+\end{itemize}
 
-\section{分阶段部署路线}
+\section{Bounded deployment contract（有界部署合同）}
+\textbf{主线：}综合。将 Claim Discipline 与第5章放行证据包落为可签署条款：范围、能力包、S1 与降级语义、证据义务、以及变更纪律。
+\begin{itemize}
+  \item \textbf{范围（Scope）。}租户/法域/语言/工作流；允许的工具面与检索域；数据分级与出境约束。
+  \item \textbf{服务不变量（Service invariants）。}同步 \textsc{api} 满足 S1；降级以 D1--D4 表达且必须返回理由码；不允许隐式无限重试耗尽预算。
+  \item \textbf{恢复与权限（Recovery \& authority）。}Tier-R1 自动化恢复；Tier-R2 需 \texttt{approval\_ref} 且 authority boundary 与执行身份分离。
+  \item \textbf{证据义务（Evidence obligations）。}三平面最小字段、\texttt{policy\_version} 与 \texttt{decision\_record\_id} 可 join；保留周期、不可篡改校验与抽样审计；放行必须附第5章 Minimum Release Evidence Pack。
+  \item \textbf{变更控制（Change control）。}策略、模型路由、检测器、索引与工具矩阵变更的差分重跑规则；回滚预案与到期例外机制；冷路径 ORA 产出物必须版本化并经发布闸进入热路径。
+\end{itemize}
+
+\section{证据图谱与发布治理（Evidence graph \& release governance）}
+\textbf{主线：}\EvalFramework{} / \ControlPlane{}。发布决策依赖连接基准运行、策略版本、模型路由、检测器版本、索引世代、代表性遥测切片与人工审批的\emph{证据图谱}。图谱须支持差分更新：仅子系统变更时的部分重跑。\textbf{统一治理决策不等于统一分数：}发布委员会对「是否放行与放行范围」负责，并逐条引用放行证据包条目与 acceptance contract，而非接受未经披露的总分压缩。
+
+\section{企业运作模型（Enterprise operating model）}
+\textbf{主线：}综合。本节把组织运作从「路线图」升级为可持续的 operating cadence：谁对策略、强制、证据与放行负责；如何把事故与回归接入证据引擎；如何把多轨评测稳定进入统一决策板。
+\begin{itemize}
+  \item \textbf{角色与职责（RACI 轮廓）。}策略/契约负责人、\SafetyKernel{} 负责人、证据与回放负责人、发布委员会主席（Release Chair）、\textsc{sre}/应急响应、法务/数据治理审批人（Tier-R2）。
+  \item \textbf{运营节律（cadence）。}周度风险与误报复盘、月度基准宪章修订与套件更新、季度审计抽样与回放演练、每次发布的证据包审阅与差分重跑。
+  \item \textbf{变更工作流。}策略/模型路由/检测器/索引世代/工具矩阵分别触发何种证据重跑；例外如何签批并设到期；ORA 仅产出候选并通过发布闸上线。
+  \item \textbf{事故$\rightarrow$策略$\rightarrow$回归闭环。}事故与未遂事件以 \texttt{correlation\_id} 归档到证据图谱；提炼为用例进入套件；回归闸确保「不倒退」；必要时触发 Tier-R2 变更与收缩能力包。
+\end{itemize}
+
+\section{能力成熟度路线（分阶段部署）}
 \begin{itemize}
   \item \textbf{第一阶段——基线包络。}输入/输出 \Guardrails{}、结构化审计日志、面向最高风险场景的极简验收契约与回归套件。
   \item \textbf{第二阶段——语境风险。}检索中介、工具策略、扩展的证据关联、影子评测。
   \item \textbf{第三阶段——统一控制面。}跨模型策略抽象、中心化策略生命周期、决策与证据的一体化看板。
-  \item \textbf{第四阶段——自适应保证。}具形式目标的风险自适应选择、回归发现自动化加强、在可行处的定向验证实验。
+  \item \textbf{第四阶段——自适应保证。}ORA 带外闭环、差分重跑自动化加强、在可行处的定向验证实验与更强 release defense。
 \end{itemize}
 
 \begin{deliverabletable}
@@ -470,10 +520,10 @@
 证据服务 & 关联标识、不可篡改 & 在时间预算内完成事件回放 & \textsc{sre} & P2 \\
 \end{deliverabletable}
 
-\section{研究路线}
-\textbf{主线：}综合。优先主题包括：异构栈上的组合式安全；带后悔界权衡的运行时可控性；经验证接口上的策略—模型分离；借助统计与贝叶斯检验的非确定评测；安全—效用—时延多目标优化；以及在可行处将基准与形式主张相连的保证科学。
+\section{研究路线（保证科学的升级路径）}
+\textbf{主线：}综合。优先主题包括：异构栈上的组合式安全；带后悔界权衡的运行时可控性；经验证接口上的策略—模型分离；借助统计与贝叶斯检验的非确定评测；安全—效用—时延多目标优化；以及将多轨证据以 bounded contract 形式稳定进入对外陈述与长期审计的保证科学。
 
-\keytakeaway{成熟项目同时交付控制、证据与学习：工程化强制、诚实测量，并通过可复现事故与基准叠加组织能力。}
+\keytakeaway{第6章把「路线图」升级为企业契约与运作模型：以 claim discipline 约束对外叙述，以 bounded deployment contract 约束能力包与退化语义，以证据图谱与发布治理驱动统一决策（非统一分数），并以组织节律让控制、证据与学习可持续闭环。}
 
 % =============================
 % 附录
