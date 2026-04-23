@@ -54,3 +54,9 @@ REVISION PRINCIPLES (8–12)
 10. Formal bluebook prose: paragraphs over bullet minutes; lists where they clarify structure only.
 11. Tables (threat, evaluation, deliverable) are substantively filled, not placeholder stubs.
 12. Compile target: XeLaTeX per style package; PDF produced from bluebook_template.tex.
+
+中文专业版（bluebook_template.tex）
+-------------------------------------
+正文已改为简体专业表述；封面元数据与中文章节标题同步。编译时在导言区覆盖 CJK 主字体为
+Noto Serif CJK SC（若系统无该字体，请安装 fonts-noto-cjk 或改为你环境中的思源/Noto CJK 字体）。
+样式宏（\ControlPlane{} 等）仍输出英文小型大写，与中文并列出现于摘要及关键处。
