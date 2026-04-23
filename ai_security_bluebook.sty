@@ -22,6 +22,7 @@
 \RequirePackage{bookmark}
 \RequirePackage{amsmath,amssymb,amsthm,mathtools}
 \RequirePackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
 \RequirePackage{etoolbox}
 \RequirePackage{caption}
 \RequirePackage{tocloft}
@@ -41,9 +42,10 @@
   \setmainfont{TeX Gyre Termes}
   \setsansfont{TeX Gyre Heros}
   \setmonofont{Latin Modern Mono}
-  \setCJKmainfont{FandolSong-Regular}
-  \setCJKsansfont{FandolHei-Regular}
-  \setCJKmonofont{FandolFang-Regular}
+  % Prefer Noto CJK when available; fall back to Fandol on TeXLive-full.
+  \IfFontExistsTF{Noto Serif CJK SC}{\setCJKmainfont{Noto Serif CJK SC}}{\setCJKmainfont{FandolSong-Regular}}
+  \IfFontExistsTF{Noto Sans CJK SC}{\setCJKsansfont{Noto Sans CJK SC}}{\setCJKsansfont{FandolHei-Regular}}
+  \IfFontExistsTF{Noto Sans Mono CJK SC}{\setCJKmonofont{Noto Sans Mono CJK SC}}{\setCJKmonofont{FandolFang-Regular}}
 \fi
 \ifLuaTeX
   \RequirePackage{fontspec}
