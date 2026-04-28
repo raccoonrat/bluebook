@@ -63,7 +63,7 @@
 % 第1章
 % =============================
 \chapterstarter{统一 AI 安全控制面：问题陈述与系统边界}{
-本章确立本书总对象：企业级 AI 安全作为\textbf{义务闭合机器}，\ControlPlane{} 为其最小工程边界——不是「多几个模块」，而是共享 \texttt{policy\_version} 与 join 键，使 judgment、execution、evidence 与 release 可相互复原。用可反驳的断裂命题、责任拓扑与四元闭合，将边界、威胁表与 CIA+ 目标收紧为能生产、维护、辩护 bounded guarantees 的最小系统形式。
+本章确立本书总对象：企业级 AI 安全作为\textbf{义务闭合机器}，\ControlPlane{} 为其最小工程边界，由共享 \texttt{policy\_version} 与 join 键界定，使 judgment、execution、evidence 与 release 可相互复原。用可反驳的断裂命题、责任拓扑与四元闭合，将边界、威胁表与 CIA+ 目标收紧为能生产、维护、辩护 bounded guarantees 的最小系统形式。
 }{
 \begin{itemize}
   \item 失败命题与问题陈述；义务—控制点—断裂与四元闭合。
@@ -80,8 +80,17 @@
 
 \noindent\textbf{耦合的 \textsc{sla} 面。}对同步时延的保证（第4章 S1）同时依赖执行平台预算与同一请求包络内的控制面求值、证据追加预算；任一侧突破预算时，对外可契约化陈述须与第5章验收条款一致地收缩，而非将责任推给「另一子系统」。
 
+\begin{figure}[htbp]
+  \centering
+  \IfFileExists{figures/Fig1.png}{\includegraphics[width=0.9\textwidth]{figures/Fig1.png}}{%
+    \fbox{\parbox{0.9\textwidth}{\vspace{22mm}\centering\textbf{图1占位：figures/Fig1.png}\par\vspace{22mm}}}%
+  }
+  \caption{Unified AI Security Control Plane 责任边界拓扑（与「系统边界与责任划分」配套）}
+  \label{fig:responsibility-topology}
+\end{figure}
+
 \begin{problemstatement}
-本书的问题陈述不再是“模型是否更安全”，而是：在动态语境、检索、工具、副作用、记忆与多租户约束下，\textbf{judgment、execution、evidence 与 release} 是否能在同一版本面与同一关联键下闭合。若四者不同框，则系统即便局部“安全”，也无法形成企业级可辩护保证：线上生效策略与放行材料不一致，审计无法复原当时依据的策略与检索/工具事件，回归与生产不共享同一事件与证据对象。\textbf{结论因此可以被压缩为：}控制面在本书中不是“平台名词”，而是一台把 judgment 编译为 execution、把 execution 沉淀为 evidence、再把 evidence 编译为 release 的义务闭合机器。
+本书的问题陈述是：在动态语境、检索、工具、副作用、记忆与多租户约束下，\textbf{judgment、execution、evidence 与 release} 是否能在同一版本面与同一关联键下闭合。若四者不同框，则系统即便局部“安全”，也无法形成企业级可辩护保证：线上生效策略与放行材料不一致，审计无法复原当时依据的策略与检索/工具事件，回归与生产不共享同一事件与证据对象。\textbf{结论因此可以被压缩为：}在本书语境下，\ControlPlane{} 是\textbf{实现义务闭合机器的最小工程边界}——将 judgment 编译为 execution、将 execution 沉淀为 evidence、再将 evidence 编译为 release。
 \end{problemstatement}
 
 \section{控制面必要性：义务—断裂点—总对象}\label{sec:why-control-plane-necessary}
@@ -90,7 +99,7 @@
 \subsection{义务闭合的必要性草图（形式化叙述）}
 企业对外可陈述的保证，仅当在同一版本面上 obligation 语义、运行时 judgment、强制执行、证据沉淀与放行陈述可被对同一请求相互重构时才成立——否则局部「安全」无法\textbf{组合}成可审计的系统级保证。若标识、schema、轨道彼此割裂，则谈不上 \emph{义务闭合}：不存在可签署 bounded contract 的联合对象。本书将控制面作为最小工程边界，正因为唯有此处强制共享 \texttt{policy\_version}、事件类型与关联键——而非堆叠更多检测器。
 
-\noindent\textbf{三类义务断裂（无控制面则闭合失败）。}第一，\textbf{租户与数据义务}无法被单一权重稳定表达；不同租户、法域与数据分级要求义务必须落在可版本化 policy 与可审计绑定上，否则模型升级会静默改写有效策略。第二，\textbf{检索与工具义务}附着在检索切片、索引世代、工具能力矩阵与审批路径上；若没有统一事件面，发布时就无法复原“系统当时允许了哪段外部文本、哪次高副作用调用”。第三，\textbf{放行义务}要求 release 材料必须能引用与线上一致的策略包、模型路由、检测器包与必要遥测样本；若证据 schema 不统一，则法务、数据治理与内部问责无法共享同一放行对象。由此，控制面之所以必要，并不是因为它拥有更多功能，而是因为只有它能够在同一编目与版本面下把义务定义、在线求值、证据沉淀与放行答辩收敛为一个闭合对象。
+\noindent\textbf{三类义务断裂（无控制面则闭合失败）。}第一，\textbf{租户与数据义务}无法被单一权重稳定表达；不同租户、法域与数据分级要求义务必须落在可版本化 policy 与可审计绑定上，否则模型升级会静默改写有效策略。第二，\textbf{检索与工具义务}附着在检索切片、索引世代、工具能力矩阵与审批路径上；若没有统一事件面，发布时就无法复原“系统当时允许了哪段外部文本、哪次高副作用调用”。第三，\textbf{放行义务}要求 release 材料必须能引用与线上一致的策略包、模型路由、检测器包与必要遥测样本；若证据 schema 不统一，则法务、数据治理与内部问责无法共享同一放行对象。唯有控制面形态的边界能够在同一编目与版本面下把义务定义、在线求值、证据沉淀与放行答辩收敛为一个闭合对象。
 
 \section{边界刻画与四元闭合判据}\label{sec:boundary-characterization}
 \textbf{主线：}\ControlPlane{}。本书将 \ControlPlane{} 视为这样一个边界：在其内，\textbf{judgment、execution、evidence、release} 四元必须共享 \texttt{policy\_version}、相容的事件 schema 与关联键，使义务在动态条件下仍可相互重构（见第\ref{sec:why-control-plane-necessary} 节）。凡将标识、schema 或轨道割裂的架构，若不经统一和解，则难以单独维持有界部署合同。
@@ -100,10 +109,10 @@
 \section{非目标与范围外架构}
 \textbf{主线：}\ControlPlane{}。\emph{推论}（与第\ref{sec:boundary-characterization} 节的边界判据衔接）：仅以生成侧 \textsc{sla} 为优化目标的模型中心栈若缺少租户/检索/放行回归面；或互不关联的安全能力堆叠且无共享事件/证据标识，均无法单独维持有界部署合同。唯有控制面形态的强制边界才要求线上与离线在同一 \texttt{policy\_version} 下可对齐，并以统一证据对象支撑差分重跑。
 
-\noindent 责任边界拓扑见图~\ref{fig:responsibility-topology}（附录）。
+\noindent 责任边界拓扑见图~\ref{fig:responsibility-topology}（「系统边界与责任划分」）。
 
 \section{阅读约定与责任拓扑（摘要）}
-\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺在明示前提下（第5章）提供\emph{可部署、可测量、可撤回}的契约；非目标见上文。benchmark governance 定义测量条件；control plane 承担 judgment 与策略求值；执行环境承担 \textsc{sla} 与安全语义无关；证据/放行闸与法域化语义（第6章）形成可放行对象。\textbf{三条硬约束：}(i) judgment/evidence/release 与执行平台以 \texttt{correlation\_id}/\texttt{decision\_record\_id}/\texttt{policy\_version} 对接；(ii) 多轨保留分叉，统一决策≠统一分数；(iii) 产出须回指证据包与 bounded contract。拓扑图：附录图~\ref{fig:responsibility-topology}。
+\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺在明示前提下（第5章）提供\emph{可部署、可测量、可撤回}的契约；非目标见上文。benchmark governance 定义测量条件；control plane 承担 judgment 与策略求值；执行环境承担 \textsc{sla} 与安全语义无关；证据/放行闸与法域化语义（第6章）形成可放行对象。\textbf{三条硬约束：}(i) judgment/evidence/release 与执行平台以 \texttt{correlation\_id}/\texttt{decision\_record\_id}/\texttt{policy\_version} 对接；(ii) 多轨保留分叉，统一决策≠统一分数；(iii) 产出须回指证据包与 bounded contract。拓扑图：图~\ref{fig:responsibility-topology}。
 
 \section{保证生产的工程判据：版本面与 join 条件}
 \textbf{主线：}\ControlPlane{}。\textbf{工程判据：}一条可对外陈述的 bounded guarantee，必须能在证据面被可 join 地复原。最低要求包括：\texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}、\texttt{rationale\_code}，以及（若触发 Tier-R2）\texttt{approval\_ref}。缺任一键，则放行材料无法证明“当时依据什么、执行了什么、记录了什么”，不构成可辩护保证对象。
@@ -147,7 +156,7 @@
 \designprinciple{跨层强制（支撑 execution）}{从输入、检索、推理、工具到输出与编排日志的强制挂点处于同一事件与版本语义下。}
 \designprinciple{证据先于信任（贯通 evidence 与 release）}{任何对外与对内保证须可指向测试、遥测或签批制品，并与放行对象同一版本面。}
 
-\keytakeaway{企业级 AI 安全的中心矛盾是四元是否闭合：判断、执行、证据与放行必须在 \ControlPlane{} 的同一编目与版本面下可关联、可差分重跑；否则在复合系统下义务必然断裂——故总对象只能是控制面，而非模型平台或功能集合。}
+\keytakeaway{企业级 AI 安全的中心矛盾是四元是否闭合：判断、执行、证据与放行必须在 \ControlPlane{} 的同一编目与版本面下可关联、可差分重跑；否则在复合系统下义务必然断裂——故总对象为 \ControlPlane{} 这一承载共享版本与 join 语义的最小边界；单一模型平台或无关联能力堆叠本身不提供该闭合。}
 
 % =============================
 % 第2章
@@ -169,7 +178,7 @@
 
 从这一点出发，\DecoupledSafety{} 的真正工程含义就变得清晰：它不是“把安全从模型里拿出来”这么简单，而是把安全从不可签署的开放语义愿望，改写为可以进入 \texttt{policy\_version}、\texttt{event} schema、\texttt{decision} 语义与 evidence graph 的实例级契约。热路径承担的是\textbf{在有限预算内完成求值、派发与记证}；冷路径承担的是\textbf{以版本化制品更新控制律，而不在线上发生隐性语义突变}。这也是本书后续所有 runtime protocol、evaluation evidence pack 与 bounded deployment contract 的系统前提。
 
-\paragraph{投影映射与残余漏报。}开放语义语境经规范化与离散分桶映射到 \(\mathcal{E}\) 的投影 \(\pi\) 必然\textbf{有损}：无法区分为可判别 \texttt{event} 特征的对抗或义务会变成热路径边界上的\textbf{漏报（false negative）}。单靠堆叠检测器无法消灭该类误差；必须由冷路径界定：Track B 压力套件、ORA 驱动的检测器与策略制品更新，以及 acceptance contract 中显式承担残余风险的切片（第5章）。
+\paragraph{投影映射与残余漏报。}开放语义语境经规范化与离散分桶映射到 \(\mathcal{E}\) 的投影 \(\pi\) 必然\textbf{有损}：无法区分为可判别 \texttt{event} 特征的对抗或义务会变成热路径边界上的\textbf{漏报（false negative）}。单靠堆叠检测器无法消灭该类误差；必须由冷路径界定：Track B 压力套件、ORA 驱动的检测器与策略制品更新，以及 acceptance contract 中显式承担残余风险的切片（第5章）。\textbf{量化咬合：}与 \(\pi\) 关联的\textbf{损失率}由 Track B 压力套件中的漏检率、场景覆盖等指标度量，并进入第5章 acceptance contract 的误差预算，用以区分可部署陈述与上界/统计陈述。
 
 \paragraph{工程语义 vs.\ 形式证明。}本章有限集合 \(\mathcal{E},\mathcal{A},\mathcal{R},\mathcal{V}\) 及映射表述的是\textbf{可签约的工程语义}——实施与验收应对齐的对象；并非对开放式 AI 系统完备形式正确性的证明。
 
@@ -397,14 +406,14 @@ Join 不应仅被当作文档粘合，而应作为\textbf{主系统不变量}：
 \textbf{S1（同步可应答）：}凡声明为同步的 \textsc{api}，在含降级情形下仍须在约定时限内返回\emph{可机器处理的}结果体（含降级载荷或错误码），不得无限阻塞主链路；须返回与租户契约一致的理由码字段。S1 与第3章热路径预算一致：违反即视为实现缺陷而非「模型不够聪明」。\textbf{量化基线（依契约而定）：}交互类网关常声明端到端 $T_{\mathrm{budget}} \le 800\,\mathrm{ms}$（\textsc{p95}）等预算；各强制层须为其预留规范化、内核 tier 与证据追加的嵌套分片，否则须同步收缩 acceptance 范围。
 
 \subsubsection*{S1 预算拆分与分层级联超时}
-\textbf{硬性记账（非形式）。}记单次请求的同步包络为 $T_{\mathrm{budget}}$（如网关 \textsc{p95}），则最小分解可写为
+\textbf{硬性记账（非形式）。}记单次请求的同步包络为 $T_{\mathrm{budget}}$（如网关 \textsc{p95}），各分量须满足\textbf{可行性约束}
 \[
-  T_{\mathrm{budget}} \;\ge\; T_{\mathrm{norm}} + \sum_{k \in \mathrm{tiers}} T_k^{\mathrm{alloc}} + T_{\mathrm{dispatch}} + T_{\mathrm{append}},
+  T_{\mathrm{norm}} + \sum_{k \in \mathrm{tiers}} T_k^{\mathrm{alloc}} + T_{\mathrm{dispatch}} + T_{\mathrm{append}} \;\le\; T_{\mathrm{budget}},
 \]
 其中 $T_{\mathrm{norm}}$ 覆盖解析与关联；tier $k$ 各有显式片 $T_k^{\mathrm{alloc}}$（层内并行仍消耗该层片）；$T_{\mathrm{dispatch}}$ 为受控下游动作；$T_{\mathrm{append}}$ 为治理执行所要求的同步证据追加完成时间。分层级联须嵌套截止：若某层超时，按 fail-fast 跳过或短路后续可裁量层、升级到保守 D 动作或拒绝——禁止单层阻塞拖垮整条路径导致被动 S1 违约。
 
 \subsubsection*{有限标记转移示意（非形式 FSM）}
-为观测方便，将粗粒度状态记为 \(\{\mathrm{N},\mathrm{T},\mathrm{D},\mathrm{B}\}\)（正常、触发激活、D 域降级、阻塞/错误终态）；转移由策略/证据闸驱动。简表示意：
+粗粒度状态 \(\{\mathrm{N},\mathrm{T},\mathrm{D},\mathrm{B}\}\)（正常、触发激活、D 域降级、阻塞/错误终态）。\textbf{基础设施级中断（分层）：}\texttt{decision\_record\_id} 签发失败、mandatory 证据行缺失、证据总线分区等\textbf{不作为}与 T1--T3 同层的普通矩阵输入；它们视为\textbf{全局中断}，优先于语义/策略 FSM，强制进入 \textbf{B} 或保守 \textbf{D} 并附 \texttt{rationale\_code}，不与「逻辑 T 状态」并发竞态。下表仅覆盖\textbf{语义/策略}信号。
 
 \begin{center}
 \footnotesize
@@ -415,7 +424,6 @@ Join 不应仅被当作文档粘合，而应作为\textbf{主系统不变量}：
 T1--T3 成立 & T & T & T & -- \\
 选择 D1--D4 & D & D & D & D \\
 S1 违约 & B & B & B & B \\
-关键证据行缺失 & D/B & D/B & D/B & B \\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -529,7 +537,7 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
   \item \textbf{RQ4（真实攻击面与发布）}——在代表性情境与法域轨约束下，残余风险是否低于 acceptance contract？证据：多轨聚合 + 签批制品 + 可回放证据条目。
 \end{itemize}
 
-\section{基准宪章（Benchmark Constitution）：测量义务而非总分公式}
+\section{基准宪章（Benchmark Constitution）：作为覆盖法的测量义务}
 \textbf{主线：}\EvalFramework{}。基准宪章声明覆盖期望：须测量哪些失效类别、采用何种切片与聚合、如何报告最坏情形与置信区间。宪章的目的不是给出单一 score，而是定义企业在对外陈述前必须履行的\emph{测量义务}；任何「跳过某类失效」都必须以非目标或例外签批形式进入本章 bounded deployment contract。
 
 \section{验收契约（Acceptance Contract）：可签署的部署准入条件}
@@ -552,7 +560,7 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
   \item \textbf{治理。}轨迹完整性、回放保真度、不可篡改校验、策略绑定正确性、事件下钻能力（必须能 join 三平面字段）。
 \end{itemize}
 
-\section{多轨评测进入统一治理决策：统一决策不等于统一分数}
+\section{多轨评测进入统一治理决策：汇合而不坍缩为总分}
 \noindent 多轨评测的关键不在于“跑两套测试”，而在于在共享执行骨架上保留语义分叉，并在统一治理决策板上完成 bounded contract 所要求的汇合。
 \begin{figure}[htbp]
   \centering
@@ -802,15 +810,6 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 % 附录
 % =============================
 \appendix
-
-\begin{figure}[htbp]
-  \centering
-  \IfFileExists{figures/Fig1.png}{\includegraphics[width=0.9\textwidth]{figures/Fig1.png}}{%
-    \fbox{\parbox{0.9\textwidth}{\vspace{22mm}\centering\textbf{图1占位：figures/Fig1.png}\par\vspace{22mm}}}%
-  }
-  \caption{Unified AI Security Control Plane 责任边界拓扑（第1章引用；为编校流统一置于附录）}
-  \label{fig:responsibility-topology}
-\end{figure}
 
 \chapter{统一研发框架与运行项目}\label{app:rd-framework}
 本附录仅收\textbf{运行节律、门禁与冲突处理}；主张—证据—契约的法学定义见第1--6章，此处不重抬「总结论」。
