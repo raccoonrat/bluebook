@@ -56,7 +56,7 @@ At the evaluation and governance layer, we reject collapsing distinct risk seman
 
 We also specify a \textbf{claim discipline / guarantee grammar}. Any safety statement that appears in release defense, external material, or contractual text must declare its scope, invariants, degradation semantics, preconditions, evidence basis, and deployment regime. Statements that cannot be compiled into an acceptance contract and evidence pack are not valid enterprise guarantees. The output is a bounded deployment contract: under explicit premises, what guarantees can be claimed; when premises break, what minimal service form must be entered, and how external claims must contract accordingly.
 
-Last, the unified R\&D framework is an \textbf{operating program}: a single artifact chain \textbf{theory $\rightarrow$ system $\rightarrow$ benchmark $\rightarrow$ release}, with one source of truth for joinable objects, one release gate, and one evolution cadence. Details appear in the appendix on the unified R\&D operating program. The durable asset is a system that continuously compiles risk semantics into control, deposits control into evidence, and compiles evidence into bounded guarantees—not a longer module list.
+Last, the unified R\&D framework is an \textbf{operating program}: a single artifact chain \textbf{theory $\rightarrow$ system $\rightarrow$ benchmark $\rightarrow$ release}, with one source of truth for joinable objects, one release gate, and one evolution cadence. Details appear in the appendix on the unified R\&D operating program.
 }
 
 % =============================
@@ -279,7 +279,7 @@ Treat the join not as documentation glue but as a \textbf{primary system invaria
   \label{fig:evidence-join-graph}
 \end{figure}
 
-\noindent\textbf{Proposition (Compositional evidence soundness, informal).} A system-level deployable claim is \emph{sound} only if every mandatory sub-component record for that \texttt{correlation\_id} is present, joinable, and semantically consistent within the declared synchronous budget S1; missing or mismatched joins refute the claim regardless of partial metrics.
+\noindent\textbf{Engineering closure principle (compositional evidence, informal).} A system-level deployable claim is \emph{defensible} only if every mandatory sub-component record for that \texttt{correlation\_id} is present, joinable, and semantically consistent within the declared synchronous budget S1; missing or mismatched joins refute the claim regardless of partial metrics.
 
 \section{Joinable evidence bus: failures, partitions, and assurance--availability tension}
 \textbf{Main thread:} \ControlPlane{}. The compositional grammar $G_{\mathrm{sys}}$ assumes rows append reliably with shared keys. Distributed realities impose explicit modes:
@@ -692,7 +692,7 @@ When premises fail: contract capability packs first; conservative D1--D4 next; T
   \item \textbf{Black-box:} only weaker guarantees (capability boundaries, S1, error codes).
 \end{itemize}
 
-\subsection{Minimal claim templates}
+\subsection{Minimal claim templates (constructors)}
 \begin{enumerate}
   \item \textbf{Scope sentence:} Within \{tenant/jurisdiction/language/workflow/capability pack\} scope, under \{\texttt{policy\_version}\}, the system provides \{bounded guarantee\}.
   \item \textbf{Invariant sentence:} For synchronous interfaces, the system satisfies \{S1\}; when \{T1--T3\} hold, it degrades only within \{D1--D4\}.

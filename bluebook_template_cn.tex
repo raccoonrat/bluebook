@@ -56,7 +56,7 @@
 
 本书同时明确给出一套 \textbf{claim discipline / guarantee grammar}。任何允许进入 release defense、对外材料或合同文本的安全主张，必须同时声明其 scope、invariants、degradation semantics、preconditions、evidence basis 与 deployment regime；任何无法被 acceptance contract 与 evidence pack 编译的陈述，都不被视为合法 guarantee statement。由此，本书提供的不是全局自然语言安全证明，而是一套 bounded deployment contract：在明示前提成立时，系统可以主张哪些有界保证；当前提破坏时，系统又必须退入何种最低服务形态，并同步收缩对外主张。
 
-最后，本蓝皮书将 unified R\&D framework 视为 operating program（统一制品链路与节律的约定），细节见附录。通过 \textbf{theory → system → benchmark → release} 的统一制品链路，以及 \textbf{One DTL Security Program} 的单一真源对象、单一放行门与单一演化节律，企业可以把语义与义务生成、运行时控制实现、测量与证据编译、以及放行与监督闭环，组织为同一条保证生产线。真正的护城河，不在于拥有更多模块，而在于拥有一套能够持续把风险语义编译为 control、把 control 沉淀为 evidence、再把 evidence 编译为 bounded guarantees 的企业系统。
+最后，本蓝皮书将 unified R\&D framework 视为 operating program（统一制品链路与节律的约定）：\textbf{theory → system → benchmark → release} 的单链路与 \textbf{One DTL Security Program} 的单一真源对象、单一放行门、单一演化节律。细节见附录。
 }
 
 % =============================
@@ -279,7 +279,7 @@ Join 不应仅被当作文档粘合，而应作为\textbf{主系统不变量}：
   \label{fig:evidence-join-graph}
 \end{figure}
 
-\noindent\textbf{命题（组合证据可靠性，非形式化表述）。}当且仅当对某 \texttt{correlation\_id} 的各Mandatory子组件记录在声明的同步预算 S1 内齐备、可 join 且语义一致时，系统级可部署主张才是可靠的；缺失或错配 join 则否定主张，无论局部指标如何。
+\noindent\textbf{工程闭合原则（组合证据，非形式化表述）。}当且仅当对某 \texttt{correlation\_id} 的各 Mandatory 子组件记录在声明的同步预算 S1 内齐备、可 join 且语义一致时，系统级可部署主张才\emph{可辩护}；缺失或错配 join 则否定主张，无论局部指标如何。
 
 \section{可 join 证据总线：故障、分区与保证—可用性张力}
 \textbf{主线：}\ControlPlane{}。组合语法 $G_{\mathrm{sys}}$ 假设键一致的可靠追加；分布式现实要求显式模式：\textbf{（i）证据路径退化}——若追加超 S1，同步接口仍须满足第4章 Fail-Safe；需完整 join 的主张必须收缩而非假装。\textbf{（ii）日志分区/不可用}——缺 mandatory $E_{\mathrm{tool}}$ 且确有副作用时，Track A「安全」叙述 fail-closed；除非 acceptance contract 明示弱观测区仅允许较弱保证（fail-open 条款）。\textbf{（iii）\texttt{decision\_record\_id} 签发失败}——不得在无治理记录下假装受控执行。
@@ -727,7 +727,7 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 \end{itemize}
 \noindent 任何超出当前类型环境的陈述，均不得进入 release defense 或对外材料。
 
-\subsection{可陈述保证的句式模板（最小集合）}
+\subsection{可陈述保证的句式模板（最小构造子集合）}
 为避免对外陈述再次滑入泛化叙述，本书只允许以下最小句式模板进入 release 材料：
 \begin{enumerate}
   \item \textbf{范围句：}在 \{租户/法域/语言/工作流/能力包\} 范围内，系统以 \{\texttt{policy\_version}\} 提供 \{有界保证\}；
