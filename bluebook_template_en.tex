@@ -56,7 +56,7 @@ At the evaluation and governance layer, we reject collapsing distinct risk seman
 
 We also specify a \textbf{claim discipline / guarantee grammar}. Any safety statement that appears in release defense, external material, or contractual text must declare its scope, invariants, degradation semantics, preconditions, evidence basis, and deployment regime. Statements that cannot be compiled into an acceptance contract and evidence pack are not valid enterprise guarantees. The output is a bounded deployment contract: under explicit premises, what guarantees can be claimed; when premises break, what minimal service form must be entered, and how external claims must contract accordingly.
 
-Last, the unified R\&D framework is an \textbf{operating program}: a single artifact chain \textbf{theory $\rightarrow$ system $\rightarrow$ benchmark $\rightarrow$ release}, with one source of truth for joinable objects, one release gate, and one evolution cadence. Details appear in the appendix on the unified R\&D operating program.
+Last, the unified R\&D framework is an \textbf{operating program}: a single artifact chain \textbf{theory $\rightarrow$ system $\rightarrow$ benchmark $\rightarrow$ release}. Details appear in the appendix on the unified R\&D operating program.
 }
 
 % =============================
@@ -111,11 +111,11 @@ Enterprise assurance is externally stateable only if there exists a single versi
 
 \noindent Responsibility-boundary topology: Figure~\ref{fig:responsibility-topology} (Section ``System boundary and responsibility split'').
 
-\section{Reading conventions and responsibility topology (summary)}
-\textbf{Main thread:} \ControlPlane{} / \EvalFramework{}. We commit to \emph{deployable, measurable, and revocable} contracts under explicit premises (Chapter~5). Non-goals are summarized above; benchmark governance owns measurement conditions; the control plane owns judgment and policy evaluation; the execution environment owns \textsc{sla} but not safety semantics; evidence/release gating and jurisdictional semantics (Chapter~6) produce auditable release objects. Topology figure: Figure~\ref{fig:responsibility-topology}.
+\section{Reading conventions (summary)}
+\textbf{Main thread:} \ControlPlane{} / \EvalFramework{}. This report commits to \emph{deployable, measurable, and revocable} contracts under explicit premises (Chapter~5). Benchmark governance defines measurement conditions; the control plane owns judgment and policy evaluation; the execution environment owns \textsc{sla} but not safety semantics; evidence/release gating and jurisdictional semantics (Chapter~6) produce auditable release objects.
 
-\section{Engineering criterion for guarantee production: version surfaces and join conditions}
-\textbf{Main thread:} \ControlPlane{}. \textbf{Engineering criterion:} any bounded guarantee that can be stated externally must be reconstructible as a join over the evidence surface. Minimum keys include: \texttt{policy\_version}, \texttt{correlation\_id}, \texttt{decision\_record\_id}, \texttt{rationale\_code}, and (if Tier-R2 is triggered) \texttt{approval\_ref}. If any key is missing, release defense cannot prove “what was in effect, what was executed, what was recorded,” and the statement is not defensible.
+\section{Engineering rule for guarantee production: version surfaces and join conditions}
+\textbf{Main thread:} \ControlPlane{}. \textbf{Engineering rule:} any bounded guarantee that can be stated externally must be reconstructible as a join over the evidence surface. Minimum keys include: \texttt{policy\_version}, \texttt{correlation\_id}, \texttt{decision\_record\_id}, \texttt{rationale\_code}, and (if Tier-R2 is triggered) \texttt{approval\_ref}. If any key is missing, release defense cannot prove “what was in effect, what was executed, what was recorded,” and the statement is not defensible.
 
 \section{Assets, adversary model, and operating assumptions}
 \textbf{Main thread:} \ControlPlane{} / \EvalFramework{}. Protected assets include: confidentiality of user and enterprise data; integrity of prompts, retrieved content, tool parameters and side effects; service availability within \textsc{sla}; and integrity of audit records. Adversaries include: adversarial prompting; retrieval-channel poisoning or leakage; tool misuse and tool-chain attacks; manipulation of session/workflow state; and abuse of the operations plane (e.g., hidden instructions inside documents). Insider threats are primarily mitigated through separation of duties, evidence immutability, and least-privilege tooling—not solely model alignment.
@@ -542,7 +542,7 @@ controls-core illustrates that decision signals need not derive from a single co
   \item \textbf{RQ4 (real attack surface and release):} under representative contexts and jurisdiction tracks, is residual risk below the acceptance contract? Evidence: multi-track aggregation + signed approvals + replayable evidence entries.
 \end{itemize}
 
-\section{Benchmark Constitution: measurement obligations as coverage law}
+\section{Benchmark Constitution: measurement obligations as coverage discipline}
 \textbf{Main thread:} \EvalFramework{}. The constitution states coverage expectations: failure categories, slicing and aggregation, worst-case reporting, and confidence intervals. Its purpose is not one score but the enterprise’s \emph{measurement obligations}. Skipping a failure category must enter the bounded deployment contract (below) as a non-goal or exception with explicit approval.
 
 \section{Acceptance Contract: signable deployment admission conditions}
@@ -630,7 +630,7 @@ For a layered runtime kernel, the Mechanism Evidence Pack can be further itemize
 \end{itemize}
 
 \subsection{Release gate invariant (organizational intent)}
-The governance target is that no Track~A ship decision relies on packs containing unversioned blobs, mismatched \texttt{correlation\_id} samples, or Track~B-only proofs. Operationally, implement an automated \textbf{admissibility validator} in \textsc{ci}/release pipelines (hard failure on structural violations) rather than relying solely on manual vote---manual steps remain for risk acceptance, not for bypassing join closure.
+The governance target is that no Track~A ship decision relies on packs containing unversioned blobs, mismatched \texttt{correlation\_id} samples, or Track~B-only proofs. Operationally, implement an automated \textbf{release-pack validator} in \textsc{ci}/release pipelines (hard failure on structural violations) rather than relying solely on manual vote---manual steps remain for risk acceptance, not for bypassing join closure.
 
 \subsection{Cryptographic and systemic immutability (recommended baseline)}
 \textbf{Main thread:} \EvalFramework{}. To resist retrospective tampering by compromised execution identities, \texttt{decision\_record\_id} issuance and evidence-plane appends should rely on an append-only or hash-chained store (or equivalent tamper-evident log service): each record binds predecessor hash, \texttt{policy\_version}, and partition key so reordering or deletion is detectable. Release gates reject packs whose cited rows fail integrity verification against the declared anchor. \textbf{Discipline:} tamper-evident storage is a \emph{recommended baseline} for strong audit defense; whether it is \emph{mandatory} for a given Track~A claim class depends on deployment regime and acceptance contract---black-box or degraded-observability tiers may cite weaker integrity artifacts only if explicitly bounded there.
@@ -647,7 +647,7 @@ Maintain a regression suite that ingests claims from release notes or external b
 \subsection{Claim type system (type-checking against the evidence regime)}
 Beyond prose templates, assign each candidate statement a \textbf{claim type} keyed to the deployment regime (white-box / semi-white-box / black-box): mechanism-replay claims, statistical tail-risk claims, S1-only claims, capability-boundary claims, etc. A statement is \emph{well-typed} only if the evidence regime listed in its guarantee grammar actually supports the evidentiary constructors it uses---for example, black-box regimes cannot legitimately carry mechanism-level replay assertions.
 
-\subsection{Guarantee grammar: what statements are allowed}
+\subsection{Guarantee grammar (required fields): what statements are allowed}
 A guarantee statement that is allowed into external materials or release defense must include at least:
 \begin{enumerate}
   \item \textbf{Scope:} applicable tenants, jurisdictions, languages, workflows, and capability-pack boundaries;
@@ -680,7 +680,7 @@ Bounded guarantees depend on semantic premises (decidable taxonomy/schema), depl
 
 \noindent\textbf{Engineering preconditions (supplement).} Cover configuration, logging, storage, and update chains (controls-core anchor in Chapter~3).
 
-\paragraph{\texttt{evidence\_schema\_version} backward compatibility and migration admissibility.} Regression and differential reruns must declare a compatible \texttt{evidence\_schema\_version}: within a major, new minors are additive and readers for that major must accept prior minors; a new major requires explicit migration clauses in the acceptance contract and coordinated updates to validators and Release Evidence Pack templates---otherwise historical packs cannot join to current audits. \textbf{Migration admissibility:} a schema major bump is \textbf{inadmissible} for uninterrupted Track~A continuity until reruns pass under the migration plan and admissibility validators are updated---otherwise release must contract scope or treat the transition as a signed exception with replay proof.
+\paragraph{\texttt{evidence\_schema\_version} backward compatibility and migration admissibility.} Regression and differential reruns must declare a compatible \texttt{evidence\_schema\_version}: within a major, new minors are additive and readers for that major must accept prior minors; a new major requires explicit migration clauses in the acceptance contract and coordinated updates to validators and Release Evidence Pack templates---otherwise historical packs cannot join to current audits. \textbf{Migration admissibility:} a schema major bump is \textbf{inadmissible} for uninterrupted Track~A continuity until reruns pass under the migration plan and release-pack validators are updated---otherwise release must contract scope or treat the transition as a signed exception with replay proof.
 
 \subsection{Degradation regimes}
 When premises fail: contract capability packs first; conservative D1--D4 next; Tier-R1/R2 with evidence; synchronize external claim contraction.
@@ -692,7 +692,7 @@ When premises fail: contract capability packs first; conservative D1--D4 next; T
   \item \textbf{Black-box:} only weaker guarantees (capability boundaries, S1, error codes).
 \end{itemize}
 
-\subsection{Minimal claim templates (constructors)}
+\subsection{Minimal claim forms (external statements)}
 \begin{enumerate}
   \item \textbf{Scope sentence:} Within \{tenant/jurisdiction/language/workflow/capability pack\} scope, under \{\texttt{policy\_version}\}, the system provides \{bounded guarantee\}.
   \item \textbf{Invariant sentence:} For synchronous interfaces, the system satisfies \{S1\}; when \{T1--T3\} hold, it degrades only within \{D1--D4\}.
@@ -701,10 +701,10 @@ When premises fail: contract capability packs first; conservative D1--D4 next; T
 \end{enumerate}
 
 \section{Bounded deployment contract}
-\textbf{Main thread:} Synthesis. A \textbf{bounded deployment contract} is the signed instantiation of the templates above: it fills in tenant-specific scope, capability packs, S1/degradation parameters, evidence obligations, engineering facts (config/logs/update), and change control, and cites the Minimum Release Evidence Pack---without introducing new guarantee types beyond this chapter.
+\textbf{Main thread:} Synthesis. A \textbf{bounded deployment contract} is the \textbf{signed instantiation} of the claim forms above for a concrete deployment: it binds what may be stated externally to explicit scope, premises, and evidence-pack references.
 
 \section{Evidence graph and release governance}
-\textbf{Main thread:} \EvalFramework{} / \ControlPlane{}. Release decisions depend on an evidence graph connecting benchmark runs, policy versions, routing, detectors, index generations, telemetry slices, and approvals; differential reruns supported. Unified governance decision \(\neq\) unified score.
+\textbf{Main thread:} \EvalFramework{} / \ControlPlane{}. Release decisions cite an evidence graph that links versions, suites, slices, and approvals into a joinable release narrative. Unified governance decision \(\neq\) unified score.
 
 \paragraph{Operating cadence.} Minimum enterprise cadence and roadmap appear in Appendix~\ref{app:rd-framework}.
 
