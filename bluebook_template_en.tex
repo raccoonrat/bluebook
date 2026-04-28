@@ -67,7 +67,7 @@ This chapter establishes the primary object of this technical report: enterprise
 }{
 \begin{itemize}
   \item Failure claims and problem statement; obligation–control-point fractures and four-part closure.
-  \item Axiomatic characterization, non-goals / out-of-scope architectures; boundary and threat table; CIA+ objectives.
+  \item Boundary characterization and closure criteria, non-goals / out-of-scope architectures; boundary and threat table; CIA+ objectives.
   \item Claim summary (non-goals, bounded guarantees; detailed in Chapter~5 with the evidence engine and deployment contract).
 \end{itemize}
 }
@@ -92,19 +92,18 @@ Enterprise assurance is externally stateable only if there exists a single versi
 
 \noindent\textbf{Three obligation fractures (why closure fails without a control plane).} First, \textbf{tenant and data obligations} cannot be stably expressed by a single weight: different tenants, jurisdictions, and data classifications require obligations to land in versioned policy bindings and auditable associations; otherwise model upgrades silently rewrite effective policy without a regression object. Second, \textbf{retrieval and tool obligations} attach to retrieval slices, index generations, tool capability matrices, and approval paths; without a unified event surface, releases cannot reconstruct “which external text and which high-impact call were allowed at that time.” Third, \textbf{release obligations} require release materials to cite the same policy pack, model routing, detector pack, and necessary telemetry samples as production; without a unified evidence schema, legal, data governance, and accountability cannot share one release object. The control plane is necessary not because it “has more features,” but because only it can converge obligation definition, online evaluation, evidence deposition, and release defense under one catalog and version surface.
 
-\section{Axiomatic characterization of \ControlPlane{} and four-part closure}
+\section{Boundary characterization and four-part closure criterion}\label{sec:boundary-characterization}
 \textbf{Main thread:} \ControlPlane{}. This technical report treats \ControlPlane{} as the boundary within which four primitives—\textbf{judgment, execution, evidence, release}—must share \texttt{policy\_version}, compatible event schemas, and join keys so that obligations remain mutually reconstructible under dynamics (Section~\ref{sec:why-control-plane-necessary}). Engineering accepts \ControlPlane{} where four-part closure is required; alternatives split identifiers or schemas and therefore cannot sustain bounded deployment contracts without reconciliation overhead.
 
+\noindent\textbf{Testable closure criteria (engineering, not metamathematics).} (i)~Every governed synchronous decision cites \texttt{policy\_version} and leaves a joinable \texttt{decision\_record\_id} when the acceptance contract demands one. (ii)~No two planes disagree on identifiers for the same request without an explicit reconciliation or downgrade path. (iii)~Release materials reference the same version surface as online enforcement for the scope they claim.
+
 \section{Non-goals and out-of-scope architectures}
-\textbf{Main thread:} \ControlPlane{}. \emph{Corollaries} of the axiomatic boundary (Section ``Axiomatic characterization''): pure model-centric stacks that optimize generation \textsc{sla} without a shared regression surface for tenant, tool, retrieval, and release obligations, and uncorrelated security features without shared event/evidence identifiers, cannot sustain bounded deployment contracts. An enforced control-plane-shaped boundary is what requires identical \texttt{policy\_version} online and offline and yields differential replay via unified evidence objects.
+\textbf{Main thread:} \ControlPlane{}. \emph{Corollaries} of the boundary criterion (Section~\ref{sec:boundary-characterization}): pure model-centric stacks that optimize generation \textsc{sla} without a shared regression surface for tenant, tool, retrieval, and release obligations, and uncorrelated security features without shared event/evidence identifiers, cannot sustain bounded deployment contracts. An enforced control-plane-shaped boundary is what requires identical \texttt{policy\_version} online and offline and yields differential replay via unified evidence objects.
 
 \noindent Responsibility-boundary topology is summarized in Appendix~\ref{fig:responsibility-topology}.
 
-\section{Reading conventions and claim scope (summary)}
-\textbf{Main thread:} \ControlPlane{} / \EvalFramework{}. We commit to \emph{deployable, measurable, and revocable} enterprise security contracts: under explicit premises (Chapter~5), bounded guarantees are provided through \DecoupledSafety{} and \EvalFramework{}. Concise non-goals appear above; full claim discipline, premises, and degradation regimes are in Chapter~5.
-
-\section{Responsibility topology (summary)}
-\textbf{Main thread:} \ControlPlane{}. Benchmark governance defines obligations and measurement conditions; the control plane owns judgment, routing, and policy evaluation; the execution environment owns execution, orchestration, and \textsc{sla} but does not interpret safety semantics; evidence/release gating elevates behavior into auditable release objects; jurisdictional and multilingual semantics enter policy and evidence scope as first-class intelligence (Chapter~6). See Appendix~\ref{fig:responsibility-topology}.
+\section{Reading conventions and responsibility topology (summary)}
+\textbf{Main thread:} \ControlPlane{} / \EvalFramework{}. We commit to \emph{deployable, measurable, and revocable} contracts under explicit premises (Chapter~5). Non-goals are summarized above; benchmark governance owns measurement conditions; the control plane owns judgment and policy evaluation; the execution environment owns \textsc{sla} but not safety semantics; evidence/release gating and jurisdictional semantics (Chapter~6) produce auditable release objects. Topology figure: Appendix~\ref{fig:responsibility-topology}.
 
 \section{Engineering criterion for guarantee production: version surfaces and join conditions}
 \textbf{Main thread:} \ControlPlane{}. \textbf{Engineering criterion:} any bounded guarantee that can be stated externally must be reconstructible as a join over the evidence surface. Minimum keys include: \texttt{policy\_version}, \texttt{correlation\_id}, \texttt{decision\_record\_id}, \texttt{rationale\_code}, and (if Tier-R2 is triggered) \texttt{approval\_ref}. If any key is missing, release defense cannot prove “what was in effect, what was executed, what was recorded,” and the statement is not defensible.
@@ -171,6 +170,24 @@ The first challenge of enterprise AI security is not “raise the model’s safe
 From this perspective, \DecoupledSafety{} is not merely “taking safety out of the model.” It rewrites safety from an unsignable semantic aspiration into an instance-level contract that can be versioned as \texttt{policy\_version}, typed as \texttt{event} schema, decided under finite \texttt{decision} semantics, and recorded into an evidence graph. The hot path carries \textbf{budgeted evaluation, dispatch, and evidence emission}; the cold path carries \textbf{versioned artifact updates without online semantic discontinuities}. This is the system premise for the runtime protocols, evaluation evidence packs, and bounded deployment contracts in later chapters.
 
 \paragraph{Projection map and residual false negatives.} Let contexts in the open semantic space map to carriers in \(\mathcal{E}\) via a projection \(\pi\) (normalization + typing + discrete buckets). \(\pi\) is necessarily lossy: attacks or obligations that do not surface as discriminable \texttt{event} features become \emph{false negatives} at the hot-path boundary. Such residual error is not eliminable by stacking detectors alone; it must be bounded by cold-path evidence: Track~B stress suites, ORA-driven detector and policy artifact updates, and acceptance-contract slices that explicitly own the residual risk (Chapter~5).
+
+\paragraph{Engineering semantics vs.\ formal proof.} The finite sets \(\mathcal{E},\mathcal{A},\mathcal{R},\mathcal{V}\) and maps in this chapter are \textbf{contractible engineering semantics}: they define what implementations and acceptance contracts must align to for release and audit. They are \emph{not} a claim of a complete formal correctness proof of an open-ended AI system.
+
+\subsection{Compilable, partially compilable, and non-compilable obligations}
+Obligations differ in how far they can be reduced to event-typed, versioned checks. The table below is a \emph{governance partition} for what may enter Track~A vs.\ what must stay Track~B, statistical, or post-release supervision (see also ``Compilable vs.\ non-compilable'' in Chapter~5).
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.30\textwidth}p{0.32\textwidth}p{0.32\textwidth}@{}}
+\toprule
+\textbf{Obligation class} & \textbf{Compilability} & \textbf{Admissible claim shape} \\
+\midrule
+Deterministic structural (allowlists, schema tags, regex, tool-destination rules) & \textbf{Event-typed:} directly bound to \texttt{event} / \texttt{policy} & Track~A mechanism + S1-style bounds when evidence joins \\
+Probabilistic / tail risk (adaptive attacks, rare harm) & \textbf{Partial:} needs explicit error budget, slices, Track~B stress & Statistical or upper-bound claims; migration to Track~A only with contract + replay \\
+Open-ended virtues (``always helpful,'' global harmlessness) & \textbf{Non-compilable} as unconditional hot-path guarantees & Research agenda, non-goals, or explicit statistical claims with scope \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \section{Introduction: the gap between alignment and system security}
 Supervised fine-tuning, preference alignment, and safety post-training reduce harmful completions in isolation but do not imply enterprise system security for composite systems with tenant obligations, retrieval lineage, tools, and release constraints (Chapter~1). \DecoupledSafety{} is the complement, not the replacement, for alignment: generation stays with the model; policy, fail-safe protocols, evidence schema, and release logic are externalized as stable, versioned objects.
@@ -267,6 +284,8 @@ Treat the join not as documentation glue but as a \textbf{primary system invaria
 
 \paragraph{Canonical failure pattern (cross-tenant tool escalation via retrieval).} An adversary poisons or manipulates retrieval so that the model proposes a tool call that exfiltrates across tenant boundaries. If retrieval evidence $E_{\mathrm{ret}}$ does not bind slices to \texttt{decision\_record\_id}, or tool evidence $E_{\mathrm{tool}}$ is absent while calls occurred, the Release Evidence Pack must fail \emph{incomplete evidence} under admissibility rules (Chapter~5)---the gate rejects ``safe overall'' narratives built only on generation scores.
 
+\noindent\textbf{Join completeness and operating mode.} Full join completeness is a \textbf{precondition for Track~A deployable closure}, not for every degraded-availability response: synchronous APIs may still return under weaker contract classes. \textbf{Mandatory-evidence bridge:} if mandatory rows are missing yet execution continues, it may do so only under acceptance-contract tiers that explicitly weaken assurance; Track~A ``safe'' narratives and strong release clauses are \textbf{suspended} until replay reconstructs joins or scope contracts (Chapter~5 admissibility).
+
 \section{Synchronous online enforcement plane and asynchronous out-of-band adaptation plane}
 \textbf{Main thread:} \ControlPlane{} + \DecoupledSafety{}.
 
@@ -324,10 +343,10 @@ This chapter specifies the \emph{runtime system layer}. It first separates the \
 \end{itemize}
 }
 
-\section{Computable envelope: from open semantics to finite protocol objects}
-\textbf{Main thread:} \DecoupledSafety{}. A runtime safety kernel is not “many detectors chained together.” It is the hot-path \textbf{computable envelope} of \DecoupledSafety{}: it projects open semantic non-decidability into finite event types, finite triggers (T1--T3), finite action space (D1--D4), a finite service invariant (S1), and finite recovery tiers (Tier-R1/R2), and requires each decision to write joinable evidence fields. This envelope yields enforceability within budget, replayability after incidents, and defensibility before release.
+\section{Runtime instantiation of the computable envelope}
+\textbf{Main thread:} \DecoupledSafety{}. Chapter~2 motivates the \textbf{computable envelope}; here we fix its \textbf{runtime instantiation}: finite triggers (T1--T3), finite actions (D1--D4), invariant S1, recovery tiers (Tier-R1/R2), and joinable evidence fields per decision---not ``many detectors,'' but a labeled protocol whose outputs are enforceable within budget and citeable in evidence packs.
 
-The controls-core execution strategy further illustrates that the envelope can be implemented as a \textbf{latency-bounded multi-tier cascade}: detectors are partitioned by estimated latency into priority tiers; within a tier execution is parallel; after each tier a cumulative score is computed; with fail-fast, crossing a threshold skips remaining tiers. The lightest path begins with \textbf{language detection, exact matches / compiled regex, structural heuristics}, escalates through \textbf{classic ML / ONNX, small advanced heuristics, relatively fast SLM \& LLM}, and invokes \textbf{LLM-as-Judge} only in borderline bands—compressing open semantics into finite streams, finite escalation paths, and finite triggers.
+The controls-core execution strategy illustrates implementation as a \textbf{latency-bounded multi-tier cascade}: detectors are partitioned by estimated latency into priority tiers; within a tier execution is parallel; after each tier a cumulative score is computed; with fail-fast, crossing a threshold skips remaining tiers. The lightest path begins with \textbf{language detection, exact matches / compiled regex, structural heuristics}, escalates through \textbf{classic ML / ONNX, small advanced heuristics, relatively fast SLM \& LLM}, and invokes \textbf{LLM-as-Judge} only in borderline bands—compressing open semantics into finite streams, finite escalation paths, and finite triggers.
 
 \section{Online hot path vs out-of-band cold path: division of labor}
 \textbf{Main thread:} \ControlPlane{}. Chapter~3 fixes dual-plane correctness and budgets; here we instantiate triggers T1--T3 and actions D1--D4 under those budgets---only the tiered-timeout and S1 accounting specifics below extend that split.
@@ -439,6 +458,25 @@ Evidence join fail (mandatory row) & D/B & D/B & D/B & B \\
 \evaluationnote{Runtime assurance targets}{Hot path: residual risk, utility impact, p95/p99 latency, S1 violation rate. Fail-safe: T*$\rightarrow$D* transition frequency and error-code distribution. ORA cold path: candidate-to-ship cycle time and rollback count. Cross-validate against Chapter 5 minimum evidence pack fields.}
 
 \noindent\textbf{Engineering correspondence.} The same submodule design shows that hot/cold split is not abstract methodology but an implementation constraint. controls-core lists prompt, response, and dataset as first-class inputs and reserves logging, post-analysis, ML training pipelines, dataset scanning, streaming detector design, strict evaluation \& resource testing protocols, and update mechanisms for the cold path outside the hot path. The system naturally spans two timescales: millisecond-to-second online cascades and fail-fast decisions versus offline adaptation and verification around logs, datasets, policy refresh, resource testing, and deployment configuration. ORA is therefore not an optional optimization in this volume but the cold-path governance complement required for a runtime kernel such as controls-core.
+
+\subsection*{Runtime state \(\rightarrow\) external claim contraction}
+Guarantee statements in marketing, contracts, and release summaries must \textbf{tighten in lockstep} with runtime signals (Chapter~5 bounded contracts): when triggers, degradation, S1 breaches, recovery, or ORA shipments change what the system can evidence, external claims must contract or cite a narrower acceptance tier---not lag behind production behavior.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.34\textwidth}p{0.58\textwidth}@{}}
+\toprule
+\textbf{Runtime signal} & \textbf{Contract / claim consequence (illustrative)} \\
+\midrule
+T1--T3 active & Narrow capability claims; disclose conflict handling; no ``fully safe'' Track~A wording unless fail-safe resolves inside contract \\
+D1--D4 entered & Utility and feature claims contract to degraded modes named in acceptance contract \\
+S1 breach pattern & Latency/availability claims contract; investigation clause until sustained compliance \\
+Tier-R1 mid-recovery & Suspend expanded Track~A claims until citeable steady state (fail-closed on assurance) \\
+Tier-R2 / \texttt{approval\_ref} & Elevated capability claims only after signed approval + version bump in pack \\
+ORA candidate not shipped & No new external guarantee until Release Evidence Pack updated under new \texttt{policy\_version} \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \keytakeaway{Chapter 4 clarifies three things: hot-path T/D/S discipline, cold-path Tier-R2 and ORA adaptation, and joinable evidence end-to-end—aligning enforcement protocols with the three-plane model (Chapter 3) and release governance (Chapter 5).}
 
@@ -587,7 +625,7 @@ For a layered runtime kernel, the Mechanism Evidence Pack can be further itemize
 The governance target is that no Track~A ship decision relies on packs containing unversioned blobs, mismatched \texttt{correlation\_id} samples, or Track~B-only proofs. Operationally, implement an automated \textbf{admissibility validator} in \textsc{ci}/release pipelines (hard failure on structural violations) rather than relying solely on manual vote---manual steps remain for risk acceptance, not for bypassing join closure.
 
 \subsection{Cryptographic and systemic immutability (recommended baseline)}
-\textbf{Main thread:} \EvalFramework{}. To resist retrospective tampering by compromised execution identities, \texttt{decision\_record\_id} issuance and evidence-plane appends should rely on an append-only or hash-chained store (or equivalent tamper-evident log service): each record binds predecessor hash, \texttt{policy\_version}, and partition key so reordering or deletion is detectable. Release gates reject packs whose cited rows fail integrity verification against the declared anchor.
+\textbf{Main thread:} \EvalFramework{}. To resist retrospective tampering by compromised execution identities, \texttt{decision\_record\_id} issuance and evidence-plane appends should rely on an append-only or hash-chained store (or equivalent tamper-evident log service): each record binds predecessor hash, \texttt{policy\_version}, and partition key so reordering or deletion is detectable. Release gates reject packs whose cited rows fail integrity verification against the declared anchor. \textbf{Discipline:} tamper-evident storage is a \emph{recommended baseline} for strong audit defense; whether it is \emph{mandatory} for a given Track~A claim class depends on deployment regime and acceptance contract---black-box or degraded-observability tiers may cite weaker integrity artifacts only if explicitly bounded there.
 
 \subsection{Ring-fencing external drift without policy bumps}
 \textbf{Main thread:} \EvalFramework{} / \ControlPlane{}. Stateful tools and externally hosted retrieval indexes can shift behavior without a local \texttt{policy\_version} bump. Contracts must either (i)~pin endorsed tool endpoints, corpus generations, and embedding generations explicitly in the acceptance contract and evidence pack, or (ii)~treat unmanaged drift as Tier-B upper-bound evidence until re-validated under Track~A---preventing silent guarantee creep.
@@ -634,7 +672,7 @@ Bounded guarantees depend on semantic premises (decidable taxonomy/schema), depl
 
 \noindent\textbf{Engineering preconditions (supplement).} Cover configuration, logging, storage, and update chains (controls-core anchor in Chapter~3).
 
-\paragraph{\texttt{evidence\_schema\_version} backward compatibility.} Regression and differential reruns must declare a compatible \texttt{evidence\_schema\_version}: within a major, new minors are additive and readers for that major must accept prior minors; a new major requires explicit migration clauses in the acceptance contract and coordinated updates to validators and Release Evidence Pack templates---otherwise historical packs cannot join to current audits.
+\paragraph{\texttt{evidence\_schema\_version} backward compatibility and migration admissibility.} Regression and differential reruns must declare a compatible \texttt{evidence\_schema\_version}: within a major, new minors are additive and readers for that major must accept prior minors; a new major requires explicit migration clauses in the acceptance contract and coordinated updates to validators and Release Evidence Pack templates---otherwise historical packs cannot join to current audits. \textbf{Migration admissibility:} a schema major bump is \textbf{inadmissible} for uninterrupted Track~A continuity until reruns pass under the migration plan and admissibility validators are updated---otherwise release must contract scope or treat the transition as a signed exception with replay proof.
 
 \subsection{Degradation regimes}
 When premises fail: contract capability packs first; conservative D1--D4 next; Tier-R1/R2 with evidence; synchronize external claim contraction.
@@ -655,7 +693,7 @@ When premises fail: contract capability packs first; conservative D1--D4 next; T
 \end{enumerate}
 
 \section{Bounded deployment contract}
-\textbf{Main thread:} Synthesis. Signable clauses covering scope, capability packs, S1 and degradation semantics, evidence obligations, engineering facts (config/logs/update), and change control---aligned with the Minimum Release Evidence Pack above.
+\textbf{Main thread:} Synthesis. A \textbf{bounded deployment contract} is the signed instantiation of the templates above: it fills in tenant-specific scope, capability packs, S1/degradation parameters, evidence obligations, engineering facts (config/logs/update), and change control, and cites the Minimum Release Evidence Pack---without introducing new guarantee types beyond this chapter.
 
 \section{Evidence graph and release governance}
 \textbf{Main thread:} \EvalFramework{} / \ControlPlane{}. Release decisions depend on an evidence graph connecting benchmark runs, policy versions, routing, detectors, index generations, telemetry slices, and approvals; differential reruns supported. Unified governance decision \(\neq\) unified score.
@@ -696,14 +734,12 @@ When premises fail: contract capability packs first; conservative D1--D4 next; T
 \textbf{Main thread:} \EvalFramework{}. Regulatory and locale-specific obligations define which sentences may appear in Track~A conclusions for that geography. \textbf{Jurisdictional admissibility} means: the obligation taxonomy and acceptance-contract clauses for a jurisdiction are satisfied by suite coverage, rationale-code dictionaries, and detector artifacts \emph{before} the language enters the deployable track. If a jurisdiction’s obligations are only partially compiled, Track~A must contract scope (capabilities, workflows, languages) rather than extrapolate global scores---mirroring admissibility logic in Chapter~5 but at the semantics layer of geo-specific guarantees.
 
 \section{Language gates: entry discipline for Track A}
-\textbf{Main thread:} \EvalFramework{}. Language gates convert “deployable conclusion eligibility” into auditable admission:
-\begin{itemize}
-  \item \textbf{Inputs.} suite coverage, false-positive cost, replay/audit field completeness (joinable minimal three-plane fields), and hot-path S1 budget impact.
-  \item \textbf{Outputs.} explicit whether the language/jurisdiction enters Track A; otherwise default to Track B (mechanism/upper-bound), and contract capability packs accordingly (e.g., disable high-impact tools, contract retrieval domains).
-\end{itemize}
+\textbf{Main thread:} \EvalFramework{}. Language gates convert deployable-conclusion eligibility into auditable admission. \textbf{Inputs:} suite coverage, false-positive cost, joinable three-plane completeness, hot-path S1 budget impact.
+
+\paragraph{Gate output schema (institutional).} Each gate emits \texttt{language\_gate\_status} \(\in \{\texttt{TrackA\_admissible},\,\texttt{TrackB\_only},\,\texttt{capability\_contracted}\}\) plus, when not \texttt{TrackA\_admissible}, explicit \textbf{capability contraction} (e.g., tools disabled, retrieval domains narrowed, workflows excluded) recorded for the bounded deployment contract. \texttt{TrackB\_only} forbids Track~A marketing or compliance sentences for that language/jurisdiction until remediating evidence ships; \texttt{capability\_contracted} allows partial Track~A only for the contracted surface.
 
 \section{Multilingual evaluation as first-class tracks}
-\textbf{Main thread:} \EvalFramework{}. Multilingual/regional tracks must be first-class citizens: each with suite versions, aggregation logic, and report templates; track semantics must be preserved at the unified governance board. \textbf{Unified governance decision \(\neq\) unified score:} multilingual semantics must not be implicitly weighted into one number; any compression must disclose weights/losses and be recorded as new claim premises under Chapter~5 claim discipline.
+\textbf{Main thread:} \EvalFramework{}. Multilingual/regional tracks are first-class: suite versions, aggregation logic, and report templates per track; semantics converge at the governance board under Chapter~5 semantic bifurcation (\textbf{unified decision \(\neq\) unified score})---this section adds only jurisdictional slicing, not a second statement of multi-track theory.
 
 \section{Chinese detector development: from semantics to deployable artifacts}
 \textbf{Main thread:} \ControlPlane{}. Core outputs are versioned artifacts:
@@ -730,14 +766,12 @@ When premises fail: contract capability packs first; conservative D1--D4 next; T
 \end{figure}
 
 \chapter{Unified R\&D Framework and Operating Program}\label{app:rd-framework}
-This appendix closes the artifact chain into an executable operating program: how theory becomes claimable properties, properties become system objects, system objects become benchmarks and evidence, and evidence becomes release decisions and bounded contracts. A unified program keeps one object language, one evidence gate, and one evolution cadence.
+This appendix records \textbf{operating rhythm} only: cadence, gates, and conflict handling. The conceptual chain from obligations to release is developed in Chapters~1--6; repeat uplift is avoided here.
 
 \section{Theory--system--benchmark--release: turning claims into a running pipeline}
-The unified framework is not a parallel arrangement of ``research, engineering, evaluation, release,'' but a single traceable chain with feedback. \textbf{Theory} defines claim discipline, guarantee grammar, jurisdictional semantics, and claim boundaries; \textbf{System} compresses them into \texttt{event}, \texttt{decision}, \texttt{evidence}, and T/D/S/Tier-R/ORA objects; \textbf{Benchmark} compiles them into constitutions, acceptance contracts, multi-track suites, and evidence packs; \textbf{Release} consumes evidence at a unified governance board and outputs ship / ship reduced / canary / rollback as bounded deployment contracts.
+The unified framework is a single traceable chain with feedback---not four silos. \textbf{Theory} fixes claim boundaries; \textbf{System} instantiates \texttt{event}/\texttt{decision}/\texttt{evidence} and runtime protocols; \textbf{Benchmark} produces constitutions, contracts, suites, packs; \textbf{Release} outputs ship decisions. \textbf{Constraint:} externally stateable conclusions cite aligned theory, objects, benchmark evidence, and contract clauses.
 
-The key constraint is: \textbf{any externally stateable conclusion must simultaneously cite theory boundaries, system objects, benchmark evidence, and release contract clauses}. Breaking this chain yields locally reassuring components without sustainable defensible guarantees.
-
-\noindent\textbf{Compiler metaphor (assurance as artifact).} Theory plus obligation mappings act as ``source''; kernels, policies, and enforcement hooks as intermediate representations; benchmark outputs and evidence packs as typed artifacts; and the bounded deployment contract plus Release Evidence Pack as the shipped ``binary'' consumed by auditors and customers. Partial compilation produces unreleasable or misleading guarantees even when components ``feel'' secure.
+\noindent\textbf{Implementation note (not a second definition of assurance).} Teams may picture ``source \(\rightarrow\) build \(\rightarrow\) ship'' for onboarding; Chapter~5 remains authoritative for admissibility and contract shape.
 
 \section{Unified security program (single operating grammar)}
 The enterprise wraps theory, system, benchmark, and release into one operating grammar: units do not define incompatible object languages, evidence gates, or release semantics. Shared objects include \texttt{policy\_version}, \texttt{correlation\_id}, \texttt{decision\_record\_id}, track discipline, acceptance contracts, and release evidence packs.

@@ -67,7 +67,7 @@
 }{
 \begin{itemize}
   \item 失败命题与问题陈述；义务—控制点—断裂与四元闭合。
-  \item 公理化刻画、非目标与范围外架构；边界与威胁表、CIA+ 目标。
+  \item 边界刻画与闭合判据、非目标与范围外架构；边界与威胁表、CIA+ 目标。
   \item 主张口径摘要（非目标、有界保证；详见第5章与 claim discipline）。
 \end{itemize}
 }
@@ -92,21 +92,18 @@
 
 \noindent\textbf{三类义务断裂（无控制面则闭合失败）。}第一，\textbf{租户与数据义务}无法被单一权重稳定表达；不同租户、法域与数据分级要求义务必须落在可版本化 policy 与可审计绑定上，否则模型升级会静默改写有效策略。第二，\textbf{检索与工具义务}附着在检索切片、索引世代、工具能力矩阵与审批路径上；若没有统一事件面，发布时就无法复原“系统当时允许了哪段外部文本、哪次高副作用调用”。第三，\textbf{放行义务}要求 release 材料必须能引用与线上一致的策略包、模型路由、检测器包与必要遥测样本；若证据 schema 不统一，则法务、数据治理与内部问责无法共享同一放行对象。由此，控制面之所以必要，并不是因为它拥有更多功能，而是因为只有它能够在同一编目与版本面下把义务定义、在线求值、证据沉淀与放行答辩收敛为一个闭合对象。
 
-\section{对 \ControlPlane{} 的公理化刻画与四元闭合}
+\section{边界刻画与四元闭合判据}\label{sec:boundary-characterization}
 \textbf{主线：}\ControlPlane{}。本书将 \ControlPlane{} 视为这样一个边界：在其内，\textbf{judgment、execution、evidence、release} 四元必须共享 \texttt{policy\_version}、相容的事件 schema 与关联键，使义务在动态条件下仍可相互重构（见第\ref{sec:why-control-plane-necessary} 节）。凡将标识、schema 或轨道割裂的架构，若不经统一和解，则难以单独维持有界部署合同。
 
+\noindent\textbf{可检验闭合判据（工程口径，非元数学公理）。}(i)~凡受治理的同步决策须引用 \texttt{policy\_version}，且在验收契约要求下留下可 join 的 \texttt{decision\_record\_id}。(ii)~同一请求在三平面上不得出现无显式和解或降级路径的标识冲突。(iii)~放行材料与线上强制所声称的范围须引用同一版本面。
+
 \section{非目标与范围外架构}
-\textbf{主线：}\ControlPlane{}。\emph{推论}（与上文「公理化刻画」衔接）：仅以生成侧 \textsc{sla} 为优化目标的模型中心栈若缺少租户/检索/放行回归面；或互不关联的安全能力堆叠且无共享事件/证据标识，均无法单独维持有界部署合同。唯有控制面形态的强制边界才要求线上与离线在同一 \texttt{policy\_version} 下可对齐，并以统一证据对象支撑差分重跑。
+\textbf{主线：}\ControlPlane{}。\emph{推论}（与第\ref{sec:boundary-characterization} 节的边界判据衔接）：仅以生成侧 \textsc{sla} 为优化目标的模型中心栈若缺少租户/检索/放行回归面；或互不关联的安全能力堆叠且无共享事件/证据标识，均无法单独维持有界部署合同。唯有控制面形态的强制边界才要求线上与离线在同一 \texttt{policy\_version} 下可对齐，并以统一证据对象支撑差分重跑。
 
 \noindent 责任边界拓扑见图~\ref{fig:responsibility-topology}（附录）。
 
-\section{阅读约定与主张口径（摘要）}
-\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺的是\emph{可部署、可测量、可撤回}的企业安全契约：在明示前提（见第5章）下，通过 \DecoupledSafety{} 与 \EvalFramework{} 提供有界保证。\textbf{非目标}包括：不对任意开放自然语言任务给出全局安全证明；不将单次离线红队分数等同于生产放行；不将不同评测轨（尤其「可部署结论轨」与「机制上界压力轨」）混读为单一总分。完整非目标、前提与退化态见第5章。
-
-\noindent\textbf{三条硬约束（避免被读成“模块集合”）。}(i) \textbf{边界：}judgment/evidence/release 属于控制面；SLA/编排属于执行平台；以 \texttt{correlation\_id}/\texttt{decision\_record\_id}/\texttt{policy\_version} 对接。(ii) \textbf{语义：}多轨保留语义分叉；统一决策不等于统一分数。(iii) \textbf{产出：}必须回指证据包、contract、claim discipline 与 bounded deployment contract，否则不构成企业级保证。
-
-\section{责任拓扑（摘要）}
-\textbf{主线：}\ControlPlane{}。benchmark governance 定义义务与测量条件；control plane 承担 judgment、routing 与 policy evaluation；执行环境承接执行、编排与 \textsc{sla} 而不承担安全语义解释；evidence/release gating 将行为提升为可放行对象；法域化与多语语义作为一级智能进入 policy 与证据口径（第6章）。拓扑图见附录图~\ref{fig:responsibility-topology}。
+\section{阅读约定与责任拓扑（摘要）}
+\textbf{主线：}\ControlPlane{} / \EvalFramework{}。本书承诺在明示前提下（第5章）提供\emph{可部署、可测量、可撤回}的契约；非目标见上文。benchmark governance 定义测量条件；control plane 承担 judgment 与策略求值；执行环境承担 \textsc{sla} 与安全语义无关；证据/放行闸与法域化语义（第6章）形成可放行对象。\textbf{三条硬约束：}(i) judgment/evidence/release 与执行平台以 \texttt{correlation\_id}/\texttt{decision\_record\_id}/\texttt{policy\_version} 对接；(ii) 多轨保留分叉，统一决策≠统一分数；(iii) 产出须回指证据包与 bounded contract。拓扑图：附录图~\ref{fig:responsibility-topology}。
 
 \section{保证生产的工程判据：版本面与 join 条件}
 \textbf{主线：}\ControlPlane{}。\textbf{工程判据：}一条可对外陈述的 bounded guarantee，必须能在证据面被可 join 地复原。最低要求包括：\texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}、\texttt{rationale\_code}，以及（若触发 Tier-R2）\texttt{approval\_ref}。缺任一键，则放行材料无法证明“当时依据什么、执行了什么、记录了什么”，不构成可辩护保证对象。
@@ -173,6 +170,24 @@
 从这一点出发，\DecoupledSafety{} 的真正工程含义就变得清晰：它不是“把安全从模型里拿出来”这么简单，而是把安全从不可签署的开放语义愿望，改写为可以进入 \texttt{policy\_version}、\texttt{event} schema、\texttt{decision} 语义与 evidence graph 的实例级契约。热路径承担的是\textbf{在有限预算内完成求值、派发与记证}；冷路径承担的是\textbf{以版本化制品更新控制律，而不在线上发生隐性语义突变}。这也是本书后续所有 runtime protocol、evaluation evidence pack 与 bounded deployment contract 的系统前提。
 
 \paragraph{投影映射与残余漏报。}开放语义语境经规范化与离散分桶映射到 \(\mathcal{E}\) 的投影 \(\pi\) 必然\textbf{有损}：无法区分为可判别 \texttt{event} 特征的对抗或义务会变成热路径边界上的\textbf{漏报（false negative）}。单靠堆叠检测器无法消灭该类误差；必须由冷路径界定：Track B 压力套件、ORA 驱动的检测器与策略制品更新，以及 acceptance contract 中显式承担残余风险的切片（第5章）。
+
+\paragraph{工程语义 vs.\ 形式证明。}本章有限集合 \(\mathcal{E},\mathcal{A},\mathcal{R},\mathcal{V}\) 及映射表述的是\textbf{可签约的工程语义}——实施与验收应对齐的对象；并非对开放式 AI 系统完备形式正确性的证明。
+
+\subsection{义务可编译层级（compilability）}
+义务能否压成事件类型化、版本化校验，决定了其可主张表面。下表为\textbf{治理分层}（与第5章「可编译/不可编译」呼应），用于划分 Track A 与 Track B / 统计 / 发布后监管。
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.28\textwidth}p{0.34\textwidth}p{0.30\textwidth}@{}}
+\toprule
+\textbf{义务类型} & \textbf{可编译性} & \textbf{典型可主张形态} \\
+\midrule
+确定性结构类（白名单、schema 标签、工具目的地规则等） & \textbf{事件级：}绑定 \texttt{event}/\texttt{policy} & Track A 机制类 + S1 等有界陈述（证据可 join） \\
+概率/尾部风险（自适应攻击、稀有伤害） & \textbf{部分：}须显式误差界、切片、Track B 压力 & 统计型或上界型；迁入 Track A 须契约 + 回放 \\
+开放性美德（「永远无害」「全局 helpful」等） & \textbf{不可编译}为无条件热路径保证 & 研究议程、非目标，或显式统计主张 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \section{引论：对齐与系统安全的间隙}
 监督微调、偏好对齐与安全后训练可降低孤立补全场景下的有害输出概率，但并不自动推出含租户义务、检索血缘、工具与放行约束的企业级系统安全（第1章）。\DecoupledSafety{} 是对齐的\textbf{补完}而非替代：生成仍在模型侧；policy、Fail-Safe 协议、证据 schema 与放行逻辑必须外置为稳定、可版本对象。
@@ -264,6 +279,8 @@ Join 不应仅被当作文档粘合，而应作为\textbf{主系统不变量}：
 
 \paragraph{典型失效模式（跨租户工具升级经由检索）。}对手污染检索使模型提议将数据外泄至越权目的地的工具调用。若检索证据 $E_{\mathrm{ret}}$ 未将切片绑定至 \texttt{decision\_record\_id}，或已发生调用却缺失 $E_{\mathrm{tool}}$，则 Release Evidence Pack 必须在准入规则下因\textbf{证据不完整}而失败——禁止仅凭生成侧分数构造「总体安全」叙事。
 
+\noindent\textbf{join 完备性与运行模式。}\textbf{完备 join 是 Track A 可部署闭合的前提，}不等于「每种降级可用性状态下都必须达成」：同步接口可在更弱契约档次下仍可响应。\textbf{强制证据桥：}若 mandatory 行缺失而执行仍在继续，则仅能发生在验收契约\textbf{明示弱化保证}的档次；Track A「安全」叙事与强放行条款\textbf{暂停}直至回放补齐或范围收缩（第5章准入）。
+
 \section{同步在线强制平面与异步带外适应平面}
 \textbf{主线：}\ControlPlane{} + \DecoupledSafety{}。
 
@@ -321,10 +338,10 @@ Join 不应仅被当作文档粘合，而应作为\textbf{主系统不变量}：
 \end{itemize}
 }
 
-\section{可计算外壳：从开放语义到有限协议对象}
-\textbf{主线：}\DecoupledSafety{}。运行时安全内核不是“多个检测器串起来”，而是 \DecoupledSafety{} 在热路径上的\textbf{computable envelope}：它把开放语义空间中的不可完全判定性，投影为有限 \texttt{event}、有限触发类（T1--T3）、有限动作空间（D1--D4）、有限服务不变量（S1）与有限恢复层（Tier-R1/Tier-R2），并要求每次决策写入可 join 的证据字段。该外壳的价值在于：在预算内可强制，在事故后可回放，在发布前可辩护。
+\section{可计算外壳的运行时实例}
+\textbf{主线：}\DecoupledSafety{}。第2章给出\textbf{可计算外壳}的必要性；本章固定其\textbf{运行时实例}：有限触发（T1--T3）、有限动作（D1--D4）、不变量 S1、恢复层（Tier-R1/Tier-R2）及每次决策的可 join 证据字段——不是检测器枚举，而是可写入证据包的标记化协议。
 
-所谓“可计算外壳”并非抽象隐喻，它可以由\emph{时延受限的分层运行时内核}工程化实现；此处仅用作概念锚点，具体工程例（controls-core）见第3章的 Controls-core 小节。
+所谓分层级联可由\emph{时延受限的运行时内核}实现；工程锚点（controls-core）见第3章 Controls-core 小节。
 
 \section{在线热路径与带外冷路径：分工回顾}
 \textbf{主线：}\ControlPlane{}。第3章已固定双平面正确性与预算；本章在预算内实例化 T1--T3 与 D1--D4——下文 S1 预算拆分与嵌套超时是对该切分的量化延伸。
@@ -436,6 +453,25 @@ S1 违约 & B & B & B & B \\
 \evaluationnote{运行时保证目标}{热路径：残余风险、效用影响、p95/p99、S1 违约率；Fail-Safe：T*$\rightarrow$D* 迁移频率与错误码分布；ORA 冷路径：候选到上线的周期与回滚次数。与第5章最小证据包字段交叉校验。}
 
 \noindent\textbf{工程对应物。}工程上，热路径与冷路径的切分不是抽象方法论，而是实现约束；一个 canonical 的运行时内核示例见第3章 Controls-core 小节，供本章在协议层引用。
+
+\subsection*{运行态与外部主张收缩}
+对外材料、合同与放行摘要中的 guarantee 须与运行时信号\textbf{同步收紧}（第5章 bounded contract）：触发、降级、S1、恢复或 ORA 生效改变可证据化内容时，外部陈述须随之收缩或引用更窄 acceptance 档次。
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{0.34\textwidth}p{0.58\textwidth}@{}}
+\toprule
+\textbf{运行信号} & \textbf{契约/主张后果（示例）} \\
+\midrule
+T1--T3 激活 & 收窄能力主张；披露冲突处置；无证勿用 Track A「全面安全」措辞 \\
+进入 D1--D4 & 效用/功能主张收缩至验收契约所载降级形态 \\
+S1 违约模式 & 时延/可用性主张收缩；必要时调查条款直至持续合规 \\
+Tier-R1 恢复中 & 在未达可引用稳态前暂停扩张型 Track A 主张（保证侧 fail-closed） \\
+Tier-R2 / \texttt{approval\_ref} & 能力提升类主张仅在签批 + 版本抬升并入包后 \\
+ORA 候选未发货 & 新对外保证须待 \texttt{policy\_version} 更新且 Release Evidence Pack 对齐 \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \keytakeaway{第4章把运行时写清三件事：热路径上的 T/D/S 纪律、冷路径上的 Tier-R2 与 ORA 适应、以及全程可 join 的证据——使强制协议与第3章三平面及第5章放行共用同一对象语言。}
 
@@ -584,7 +620,7 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 治理目标是：任何 Track A 放行不得依赖含未版本化 blob、\texttt{correlation\_id} 样本错位或仅靠 Track B 机制证明的包。操作上应在 \textsc{ci}/发布流水线中实现\textbf{准入校验器}（结构违规硬失败），人工环节保留风险接受而不是绕过 join 闭合。
 
 \subsection{密码学与系统性不可篡改（推荐基线)}
-\textbf{主线：}\EvalFramework{}。为抵御执行侧身份事后篡改日志，\texttt{decision\_record\_id} 签发与证据面追加宜采用仅追加或哈希链存储（或等价的可信日志服务）：每条记录绑定前驱哈希、\texttt{policy\_version} 与分区键，使删改可侦测。放行闸拒绝完整性校验失败的引用。
+\textbf{主线：}\EvalFramework{}。为抵御执行侧身份事后篡改日志，\texttt{decision\_record\_id} 签发与证据面追加宜采用仅追加或哈希链存储（或等价的可信日志服务）：每条记录绑定前驱哈希、\texttt{policy\_version} 与分区键，使删改可侦测。放行闸拒绝完整性校验失败的引用。\textbf{区分：}抗篡改存储是\textbf{推荐基线}以利强审计辩护；某一 Track A 主张类别是否\textbf{强制}取决于部署分层与验收契约——black-box 或弱观测档位仅可在契约中明确放宽的完整性工件下陈述。
 
 \subsection{外部漂移与未 bump 的策略世代隔离}
 \textbf{主线：}\EvalFramework{} / \ControlPlane{}。有状态工具与外部检索索引可在本地 \texttt{policy\_version} 不变下漂移行为。契约须要么（i）在验收契约与证据包中钉死认可的工具端点、语料世代与向量世代，要么（ii）将未受控漂移一律降级为 Track B 上界证据，直至在 Track A 下复测——禁止静默扩大对外保证。
@@ -653,7 +689,7 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 
 \noindent\textbf{工程前提补充。}deployment preconditions 不应停留在抽象层，它必须覆盖配置、日志、存储与更新链等可被审计的工程事实；以 controls-core 为例的工程锚点见第3章 Controls-core 小节，本节不再跨章展开实现细节。
 
-\paragraph{\texttt{evidence\_schema\_version} 向后兼容。}回归与差分重跑须声明相容的 \texttt{evidence\_schema\_version}：同一 major 内 minor 为增量字段，读者须接受较早 minor；变更 major 须在 acceptance contract 中写明迁移条款并同步更新校验器与 Release Evidence Pack 模板——否则历史包无法与当前审计 join。
+\paragraph{\texttt{evidence\_schema\_version} 向后兼容与迁移准入。}回归与差分重跑须声明相容的 \texttt{evidence\_schema\_version}：同一 major 内 minor 为增量字段，读者须接受较早 minor；变更 major 须在 acceptance contract 中写明迁移条款并同步更新校验器与 Release Evidence Pack 模板——否则历史包无法与当前审计 join。\textbf{迁移准入：}schema major 变更在重跑通过与准入校验器更新前，对\textbf{无间断 Track A 连续性}为\textbf{不可准入}——否则须收缩放行或签例外并附回放证明。
 
 \subsection{Degradation regimes（退化态与最低服务形态）}
 当前提失效、观测不足、依赖退化或证据链断裂时，系统必须退入已声明的最低服务形态。最小退化原则是：
@@ -695,7 +731,7 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 
 
 \section{Bounded deployment contract（有界部署合同）}
-\textbf{主线：}综合。将 Claim Discipline 与本章前述放行证据包落为可签署条款：范围、能力包、S1 与降级语义、证据义务、以及变更纪律。
+\textbf{主线：}综合。\textbf{有界部署合同}即上文「最小主张模板」的\textbf{签字实例化}：填入租户范围、能力包、S1/降级参数、证据义务、工程事实（配置/日志/更新）与变更纪律，并引用 Minimum Release Evidence Pack——不在本章引入新的 guarantee 类型。
 \begin{itemize}
   \item \textbf{范围（Scope）。}租户/法域/语言/工作流；允许的工具面与检索域；数据分级与出境约束。
   \item \textbf{服务不变量（Service invariants）。}同步 \textsc{api} 满足 S1；降级以 D1--D4 表达且必须返回理由码；不允许隐式无限重试耗尽预算。
@@ -744,14 +780,12 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 \textbf{主线：}\EvalFramework{}。监管与地域特定义务决定某法域下哪些句子可出现在 Track A 结论中。\textbf{法域准入}指：在进入该语言的 deployable 轨之前，taxonomy、验收契约条款与 detector 制品已覆盖该法域义务；若仅部分编译，则 Track A 必须收缩范围（能力、工作流、语言），而非外推为更宽泛的放行结论——这与第5章准入逻辑同构，但在 geo-specific 语义层落实。
 
 \section{多语言 gate：进入 Track A 的准入纪律}
-\textbf{主线：}\EvalFramework{}。多语言 gate 的作用是把「是否可部署结论」从模糊承诺变成可审计准入：
-\begin{itemize}
-  \item \textbf{输入。}该语言/法域的套件覆盖度、误报成本、回放与审计字段完备度（三平面最小字段可 join）、以及热路径 S1 预算影响。
-  \item \textbf{输出。}明确该语言是否进入 Track A；若未进入，则其结论默认归入 Track B（机制/上界），并在第5章 bounded deployment contract 中收缩能力包（例如禁用高副作用工具或收窄检索域）。
-\end{itemize}
+\textbf{主线：}\EvalFramework{}。多语言 gate 将「是否可出具可部署结论」变为可审计准入。\textbf{输入：}套件覆盖、误报成本、三平面可 join、热路径 S1 预算影响。
+
+\paragraph{闸口输出 schema（制度化）。}每条闸口产出 \texttt{language\_gate\_status} \(\in \{\texttt{TrackA\_admissible},\,\texttt{TrackB\_only},\,\texttt{capability\_contracted}\}\)；当非 \texttt{TrackA\_admissible} 时须记录\textbf{能力收缩}并写入 bounded deployment contract。\texttt{TrackB\_only} 禁止该语言/法域使用 Track A 对外话术直至补救证据到位；\texttt{capability\_contracted} 仅对收缩后的表面允许部分 Track A。
 
 \section{多语评测作为多轨的一等公民}
-\textbf{主线：}\EvalFramework{}。多语/地域轨道必须以一等公民方式进入多轨体系：各自拥有套件版本、聚合逻辑与报告模板，并在统一治理决策板上保留轨道语义；如需跨轨压缩，必须显式披露权重与损失并写入 claim discipline。
+\textbf{主线：}\EvalFramework{}。各语言/地域轨为一等轨道（套件版本、聚合、模板独立）；与第5章\textbf{语义分叉与治理汇合}衔接（统一决策≠统一总分）——本章仅增加\textbf{法域切片}。
 
 \section{中文 detector development：从语义到可部署制品}
 \textbf{主线：}\ControlPlane{}。核心产出是可版本化制品，而不是散文经验：
@@ -779,14 +813,12 @@ decision signals 并不必然来源于统一总分，它也可以来源于运行
 \end{figure}
 
 \chapter{统一研发框架与运行项目}\label{app:rd-framework}
-本附录把本书对象压成可执行 operating program：\ControlPlane{}、\DecoupledSafety{}、\EvalFramework{}、bounded deployment contract 与法域语义在同一链路下闭环。
+本附录仅收\textbf{运行节律、门禁与冲突处理}；主张—证据—契约的法学定义见第1--6章，此处不重抬「总结论」。
 
 \section{theory--system--benchmark--release：把主张变成可运行流水线}
-本书中的统一研发框架，不是“研究、工程、评测、发布”四项工作的并列排布，而是一条单向可追溯、双向可回流的生产链。\textbf{theory} 负责给出 claim discipline、guarantee grammar、geo-specific semantics 与可主张边界；\textbf{system} 负责把这些边界压到 \texttt{event}、\texttt{decision}、\texttt{evidence} 与 T/D/S/Tier-R/ORA 等可验收对象；\textbf{benchmark} 负责把这些对象转译为 benchmark constitution、acceptance contract、多轨套件与两类 evidence pack；\textbf{release} 则负责把证据输入统一治理决策板，并输出放行、限权放行、灰度、回滚等 bounded deployment contract。
+统一框架是一条可追溯链路（非四线并列）：\textbf{theory} 定边界；\textbf{system} 实例化 \texttt{event}/\texttt{decision}/\texttt{evidence} 与协议；\textbf{benchmark} 产出宪章、契约、套件与证据包；\textbf{release} 输出放行决策。\textbf{约束：}对外陈述须同时回指理论边界、对象、基准证据与合同条款。
 
-\noindent\textbf{编译器隐喻（保证作为制品）。}亦可采用\textbf{编译器式}心智模型：理论加义务映射为「源码」；内核、策略与强制挂点为中间表示；评测输出与证据包为类型化制品；bounded deployment contract 与 Release Evidence Pack 则为交付给审计方与客户的「二进制」。One DTL Security Program 唯有在各阶段对齐时才可持续——半成品编译不会产生可放行主张，即便组件主观上「更安全」。
-
-这条链路的关键约束是：\textbf{任何可对外陈述的结论，都必须能够同时回指到 theory 中定义的主张边界、system 中实现的对象、benchmark 中产生的证据，以及 release 中被引用的 contract 条款。}一旦这条链路中断，系统仍然可以“做很多安全能力”，但不能持续生产可辩护 guarantee。由此，本章并不把研发框架理解为资源编排，而是把它理解为 guarantee production system 的组织形式。
+\noindent\textbf{实施注记。}可用「源码→构建→交付」作入职心智模型；\textbf{准入与契约形态以第5章为准}，附录不重复定义。
 
 \section{One DTL Security Program}
 One DTL Security Program 的本质，不是一个项目集合，也不是一张汇报关系图，而是一条把 theory、system、benchmark 与 release 压成同一运行语法的企业生产线。它要求：不同单元不能各自定义自己的对象语言、自己的证据门、自己的发布口径；相反，所有单元都必须围绕同一组可版本、可 join、可回放的对象工作，例如 \texttt{policy\_version}、\texttt{correlation\_id}、\texttt{decision\_record\_id}、track discipline、acceptance contract 与 release evidence pack。
